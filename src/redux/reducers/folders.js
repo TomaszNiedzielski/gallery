@@ -1,25 +1,7 @@
-import { ADD_MEDIA_TO_EXISTING_FOLDER, CREATE_FOLDER_AND_ADD_MEDIA, SET_STATE_WITH_DATA_FROM_STORAGE } from "../actions/folders";
+import { ADD_MEDIA_TO_EXISTING_FOLDER, CHANGE_FOLDER_NAME, CREATE_FOLDER_AND_ADD_MEDIA, SET_STATE_WITH_DATA_FROM_STORAGE } from "../actions/folders";
 import { AsyncStorage } from 'react-native';
 
 let initialState = [];
-
-// get data from local storage
-let foldersFromStorage = [];
-const restoreData = async () => {
-    try {
-        foldersFromStorage = await AsyncStorage.getItem('folders');
-    } catch(errors) {
-        console.log('errors', errors);
-    }
-}
-
-restoreData();
-
-if(foldersFromStorage.length > 0) {
-    console.log('local storage istnieje kurwa');
-    foldersFromStorage = JSON.parse(foldersFromStorage);
-    //initialState = foldersFromStorage;
-}
 
 const foldersReducer = (state = initialState, action) => {
     let updatedState = state;
@@ -30,15 +12,9 @@ const foldersReducer = (state = initialState, action) => {
             return action.payload.folders;
         case CREATE_FOLDER_AND_ADD_MEDIA:
             updatedState = [action.payload, ...state];
-            console.log('create folder', updatedState);
-
-            // storeNewState(updatedState);
-
             return updatedState;
         case ADD_MEDIA_TO_EXISTING_FOLDER:
-
             const folderIndex = updatedState.findIndex((folder => folder.name === action.payload.folderName));
-
             updatedState = updatedState.map(folder => {
                 if(folder.name === action.payload.folderName) {
                     folder = {
@@ -48,10 +24,20 @@ const foldersReducer = (state = initialState, action) => {
                 }
                 return folder;
             });
-
-            // storeNewState(updatedState);
-            
-            console.log('new kurawa kaaska: ', updatedState);
+            return updatedState;
+        case CHANGE_FOLDER_NAME:
+            const { oldFolderName, newFolderName } = action.payload;
+            // update folder name
+            updatedState = updatedState.map(folder => {
+                if(folder.name === oldFolderName) {
+                    folder = {
+                        ...folder,
+                        name: newFolderName
+                    }
+                    console.log('doszło do zmiany: ', folder);
+                }
+                return folder;
+            });
             return updatedState;
         default:
             return state;

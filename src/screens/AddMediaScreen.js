@@ -32,7 +32,6 @@ class AddMediaScreen extends React.Component {
 
         this.state = {
             selectedMedia: [],
-            modalIsVisible: false,
             selectedFolder: null,
             folders: []
         }
@@ -50,7 +49,7 @@ class AddMediaScreen extends React.Component {
                     keyExtractor={item => item.path}
                     renderItem={renderItem}
                 />}
-                {folders.length > 0 &&
+                {selectedMedia.length > 0 &&
                 <ChooseFolderManager
                     selectedMedia={selectedMedia}
                     navigation={this.props.navigation}
@@ -62,6 +61,7 @@ class AddMediaScreen extends React.Component {
     }
 
     componentDidMount() {
+        console.log('to jest kurwa dramat: ', this.props.folders);
         // set state
         this.setState({ folders: this.props.folders });
 

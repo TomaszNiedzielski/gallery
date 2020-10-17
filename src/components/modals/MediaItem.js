@@ -11,10 +11,6 @@ export default class MediaItem extends React.Component {
 
     render() {
         const { media, index } = this.state;
-        console.log('media item: ', this.props.mediaItem);
-        //let images = [];
-        //images = images.push(this.props.mediaItem.path);
-        console.log('media po tuningu: ', this.state.media);
         return (
             <Modal
                 onRequestClose={() => this.props.backAction()}
@@ -27,32 +23,6 @@ export default class MediaItem extends React.Component {
                         enableImageZoom={true}
                         menus={() => null}
                         index={index}
-                        /*renderArrowLeft={() => (
-                            <View>
-                                <Text
-                                    style={{
-                                        //backgroundColor: 'green',
-                                        height: '100%',
-                                        width: Dimensions.get('window').width/2
-                                    }}
-                                >
-                                    
-                                </Text>
-                            </View>
-                        )}
-                        renderArrowRight={() => (
-                            <View>
-                                <Text
-                                    style={{
-                                       // backgroundColor: 'green',
-                                        height: '100%',
-                                        width: Dimensions.get('window').width/2
-                                    }}
-                                >
-                                    
-                                </Text>
-                            </View>
-                        )}*/
                         onChange={index => this.setState({ index: index })}
                         onMove={(data) => console.log('move kurwa: ', data)}
                         onSwipeDown={() => {
@@ -65,20 +35,14 @@ export default class MediaItem extends React.Component {
     }
 
     componentDidMount() {
-
-        console.log('was ist das? ', this.props.mediaItem);
-
         this.setState({ index: this.props.mediaItem.index });
 
         let media = this.props.folder.media;
 
         media = media.map(element => {
-            console.log('elelement ', element);
             element.url = element.path;
             return element;
         });
-
-        console.log('tuning: ', media);
 
         this.setState({ media: media });
     }
