@@ -5,7 +5,10 @@ import FastImage from 'react-native-fast-image';
 
 import CheckBox from '../checkboxes/CheckBox';
 
-export default class MediaListItem extends React.Component {
+import { connect } from 'react-redux';
+import { addSelectedMediaToCollection, removeSelectedMediaFromCollection } from '../../redux/actions/selectedMedia';
+
+class MediaListItem extends React.Component {
 
     render() {
         const { item, index, onPressHandler, isRemovingEnabled } = this.props;
@@ -15,6 +18,7 @@ export default class MediaListItem extends React.Component {
                     <CheckBox
                         value={false}
                         visible={isRemovingEnabled}
+                        onValueChange={this.onCheckBoxValueChange}
                     />
                     <FastImage
                         source={{ uri: item.path }}
@@ -25,15 +29,36 @@ export default class MediaListItem extends React.Component {
         );
     }
 
+    onCheckBoxValueChange = value => {
+        console.log(value);
+        if(value === true) {
+            this.props.addSelectedMediaToCollection(this.props.item.path);
+        } else {
+            this.props.removeSelectedMediaFromCollection(this.props.item.path);
+        }
+    }
+
 }
 
 const styles = StyleSheet.create({
-    container: {
-       // position: 'relative'
-    },
     mediaItem: {
         height: Dimensions.get('window').width/3-6,
         width: Dimensions.get('window').width/3-6,
         margin: 3
     }
 });
+
+const mapStateToProps = (state) => {
+    return {
+        selectedMedia: state.selectedMedia
+    }
+}
+
+const mapDispatchToprops = () => {
+    return {
+        addSelectedMediaToCollection,
+        removeSelectedMediaFromCollection
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToprops())(MediaListItem);

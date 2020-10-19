@@ -51,6 +51,16 @@ class MediaList extends React.Component {
         this.backHandler.remove();
     }
 
+    componentDidUpdate() {
+        if(this.props.error) {
+            this.props.navigation.goBack();
+            return;
+        }
+        if(this.state.folder && this.props.folder && this.state.folder.media.length !== this.props.folder.media.length) {
+            this.setState({ folder: this.props.folder });
+        }
+    }
+
     openMediaItem = (item, index) => {
         item.index = index; // add index of this object to folder
         this.setState({ mediaItem: item });
@@ -66,10 +76,18 @@ class MediaList extends React.Component {
 }
 
 const mapStateToProps = (state, props) => {
-    const folder = state.folders.find(item => item.name === props.params.folderName);
-    return {
-        'folder': folder
+    if(state.folders.length === 0) {
+        console.log('error powrót na głowna');
+        return {
+            error: true
+        }
+    } else {
+        const folder = state.folders.find(item => item.name === props.params.folderName);
+        return {
+            'folder': folder
+        }
     }
+    
 }
 
 const mapDispatchToprops = () => {
@@ -82,5 +100,4 @@ const styles = StyleSheet.create({
     container: {
         flex: 1
     },
-    
 });

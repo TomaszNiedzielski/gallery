@@ -20,11 +20,15 @@ import FolderScreen from './src/screens/FolderScreen';
 
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
+
 import foldersReducer from './src/redux/reducers/folders';
+import selectedMediaReducer from './src/redux/reducers/selectedMedia'; 
 
 const reducers = combineReducers({
-    folders: foldersReducer
+    folders: foldersReducer,
+    selectedMedia: selectedMediaReducer
 });
+
 const store = createStore(reducers);
 
 const Stack = createStackNavigator();

@@ -1,5 +1,12 @@
-import { ADD_MEDIA_TO_EXISTING_FOLDER, CHANGE_FOLDER_NAME, CREATE_FOLDER_AND_ADD_MEDIA, SET_STATE_WITH_DATA_FROM_STORAGE } from "../actions/folders";
+import { ADD_MEDIA_TO_EXISTING_FOLDER,
+    CHANGE_FOLDER_NAME,
+    CREATE_FOLDER_AND_ADD_MEDIA,
+    SET_STATE_WITH_DATA_FROM_STORAGE,
+    REMOVE_SELECTED_MEDIA_FROM_STATE
+} from "../actions/folders";
+
 import { AsyncStorage } from 'react-native';
+import selectedMediaReducer from "./selectedMedia";
 
 let initialState = [];
 
@@ -14,12 +21,11 @@ const foldersReducer = (state = initialState, action) => {
             updatedState = [action.payload, ...state];
             return updatedState;
         case ADD_MEDIA_TO_EXISTING_FOLDER:
-            const folderIndex = updatedState.findIndex((folder => folder.name === action.payload.folderName));
             updatedState = updatedState.map(folder => {
                 if(folder.name === action.payload.folderName) {
                     folder = {
                         ...folder,
-                        media: [...folder.media, ...action.payload.media]
+                        media: [...action.payload.media, ...folder.media]
                     }
                 }
                 return folder;
@@ -39,6 +45,35 @@ const foldersReducer = (state = initialState, action) => {
                 return folder;
             });
             return updatedState;
+        case REMOVE_SELECTED_MEDIA_FROM_STATE:
+            //updatedState = updatedState.filter(folder => folder.media.path !== action.payload.);
+
+            console.log('before removeing selected items: ', updatedState);
+
+            console.log('payload: ', action.payload);
+
+            const folderToRemoveItemsFrom = updatedState.find(folder => folder.name === action.payload.folderName);
+
+            let updatedFolder = folderToRemoveItemsFrom;
+            action.payload.selectedMedia.map(selectedMediaItem => {
+                updatedFolder.media = updatedFolder.media.filter(mediaItem => mediaItem.path !== selectedMediaItem);
+            });
+            console.log('updated folder: ', updatedFolder);
+
+            updatedState = updatedState.filter((folder, index) => {
+                if(folder.name === updatedFolder.name && updatedFolder.media.length > 0) {
+                    folder = {
+                        ...updatedFolder
+                    }
+                    return folder;
+                }
+            });
+
+            console.log('after removing selected: ', updatedState);
+
+            return updatedState;
+
+
         default:
             return state;
     }

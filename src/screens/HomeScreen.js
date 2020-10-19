@@ -84,7 +84,6 @@ class HomeScreen extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log('wszystkie foldery: ', state.folders);
     return {
         'folders': state.folders
     }

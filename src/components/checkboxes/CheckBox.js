@@ -14,7 +14,10 @@ export default class CheckBox extends React.Component {
         const { value, visible } = this.state;
         if(visible) {
             return(
-                <TouchableNativeFeedback onPress={() => this.setState({ value: !value })}>
+                <TouchableNativeFeedback onPress={() => {
+                    this.setState({ value: !value });
+                    this.props.onValueChange(!value);
+                }}>
                     <View style={styles.container}>
                         {value && <Icon name="check" size={22} />}
                     </View>

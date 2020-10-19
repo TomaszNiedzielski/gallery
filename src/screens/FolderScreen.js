@@ -1,16 +1,19 @@
 import React from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback, BackHandler } from 'react-native';
 
 import MediaList from '../components/lists/MediaList';
 import Menu from '../components/modals/Menu';
+import ChangeFolderNameManager from '../components/modals/ChangeFolderNameManager';
 
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../constans/Colors';
 import Icon from 'react-native-vector-icons/Entypo';
 
-import ChangeFolderNameManager from '../components/modals/ChangeFolderNameManager';
+import { connect } from 'react-redux';
+import { removeSelectedMediaFromState } from '../redux/actions/folders';
+import { removeSelectedMediaFromCollection } from '../redux/actions/selectedMedia';
 
-export default class FolderScreen extends React.Component {
+class FolderScreen extends React.Component {
 
     constructor(props) {
         super(props);
@@ -33,6 +36,7 @@ export default class FolderScreen extends React.Component {
                 <MediaList
                     params={this.props.route.params}
                     isRemovingEnabled={isRemovingEnabled}
+                    navigation={this.props.navigation}
                 />
                 {isMenuOpen &&
                     <Menu
@@ -42,7 +46,7 @@ export default class FolderScreen extends React.Component {
                                 onPressHandler: this.openChangeFolderNameManager
                             }, {
                                 name: 'Remove image',
-                                onPressHandler: this.openRemoveMediaManager
+                                onPressHandler: this.handleRemoveMediaManager
                             }
                         ]}
                     />}
@@ -82,6 +86,15 @@ export default class FolderScreen extends React.Component {
                 </View>
             )
         });
+
+        // back button handler
+        this.backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            this.backAction
+        );
+
+        // remove selected items from reduces
+        this.props.removeSelectedMediaFromCollection();
     }
 
     componentDidUpdate() {
@@ -89,26 +102,51 @@ export default class FolderScreen extends React.Component {
         this.props.navigation.setOptions({
             title: this.state.folderName
         });
+        console.log('folder screen update');
+    }
+
+    componentWillUnmount() {
+        this.backHandler.remove();
     }
 
     openChangeFolderNameManager = () => {
         this.setState({ isChangeFolderNameManagerOpen: true })
     }
 
-    openRemoveMediaManager = () => {
+    handleRemoveMediaManager = () => {
         // show checkboxes on media containers
-        this.setState({ isRemovingEnabled: !this.state.isRemovingEnabled });
+        const isRemovingEnabled = !this.state.isRemovingEnabled;
+        this.setState({ isRemovingEnabled: isRemovingEnabled });
 
         // add icon of trash on the header
         this.props.navigation.setOptions({
             headerRight: () => (
-                <View>
+                (isRemovingEnabled === true ? <View>
                     <View style={styles.headerRight}>
-                        <Icon name="trash" size={this.iconSize} color={this.iconColor} onPress={() => {}} />
+                        <Icon name="trash" size={this.iconSize} color={this.iconColor} onPress={this.onTrashPressHandler} />
                     </View>
-                </View>
+                </View> : 
+                <View style={styles.headerRight}>
+                    <Icon name="dots-three-vertical" size={this.iconSize} color={this.iconColor} onPress={() => this.setState({ isMenuOpen: !this.state.isMenuOpen })} />
+                </View>)
             )
         });
+    }
+
+    onTrashPressHandler = () => {
+        const { removeSelectedMediaFromState, removeSelectedMediaFromCollection, selectedMedia } = this.props;
+        removeSelectedMediaFromState(selectedMedia, this.state.folderName);
+        removeSelectedMediaFromCollection();
+
+        this.handleRemoveMediaManager();
+    }
+
+    backAction = () => {
+        if(this.state.isRemovingEnabled) {
+            this.handleRemoveMediaManager();
+            this.props.removeSelectedMediaFromCollection(); // if something has been selected
+            return () => null;
+        }
     }
 
 }
@@ -121,3 +159,18 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
     }
 });
+
+const mapStateToProps = (state) => {
+    return {
+        selectedMedia: state.selectedMedia
+    }
+}
+
+const mapDispatchToprops = () => {
+    return {
+        removeSelectedMediaFromState,
+        removeSelectedMediaFromCollection
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToprops())(FolderScreen);
