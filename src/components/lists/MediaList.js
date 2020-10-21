@@ -2,18 +2,19 @@ import React from 'react';
 import { FlatList, StyleSheet, View, Dimensions, BackHandler } from 'react-native';
 import { connect } from 'react-redux';
 
-import MediaItem from '../modals/MediaItem';
 import MediaListItem from '../items/MediaListItem';
+import MediaSlider from '../modals/MediaSlider';
 
 class MediaList extends React.Component {
 
     state = {
         folder: this.props.folder,
-        mediaItem: {}
+        mediaItem: {},
+        selectedMediaItemIndex: null
     }
 
     render() {
-        const { folder, mediaItem } = this.state;
+        const { folder, selectedMediaItemIndex } = this.state;
         return(
             <View style={styles.container}>
                 {folder.media.length > 0 && <FlatList
@@ -29,12 +30,13 @@ class MediaList extends React.Component {
                     )}
                     numColumns={3}
                 />}
-                {Object.keys(mediaItem).length > 0 &&
-                    <MediaItem
-                        mediaItem={mediaItem}
-                        backAction={this.backAction}
-                        folder={folder}
+                {selectedMediaItemIndex !== null ?
+                    <MediaSlider
+                        media={folder.media}
+                        onRequestClose={this.backAction}
+                        selectedMediaItemIndex={selectedMediaItemIndex}
                     />
+                    : null
                 }
             </View>
         );
@@ -63,12 +65,12 @@ class MediaList extends React.Component {
 
     openMediaItem = (item, index) => {
         item.index = index; // add index of this object to folder
-        this.setState({ mediaItem: item });
+        this.setState({ selectedMediaItemIndex: index });
     }
 
     backAction = () => {
-        if(Object.keys(this.state.mediaItem).length > 0) {
-            this.setState({  mediaItem: {} });
+        if(this.state.selectedMediaItemIndex !== null) {
+            this.setState({ selectedMediaItemIndex: null });
             return () => null;
         }
     }
