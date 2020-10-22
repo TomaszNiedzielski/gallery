@@ -33,7 +33,7 @@ class FolderScreen extends React.Component {
         return (
             <View style={styles.container}>
                 <MediaList
-                    params={this.props.route.params}
+                    folderName={folderName}
                     isRemovingEnabled={isRemovingEnabled}
                     navigation={this.props.navigation}
                 />
@@ -94,7 +94,6 @@ class FolderScreen extends React.Component {
         this.props.navigation.setOptions({
             title: this.state.folderName
         });
-        console.log('folder screen update');
     }
 
     componentWillUnmount() {

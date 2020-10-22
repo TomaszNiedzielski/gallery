@@ -45,24 +45,17 @@ class HomeScreen extends React.Component {
         });
 
         this.restoreData();
-
     }
 
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
+    componentWillUnmount = () => this.unsubscribe();
 
-    async saveReduxStateInStorage() {
-        console.log('save redux state');
-        console.log(this.props.folders);
-        await AsyncStorage.setItem('folders', JSON.stringify(this.props.folders));
-    }
+    saveReduxStateInStorage = async () => await AsyncStorage.setItem('folders', JSON.stringify(this.props.folders));
 
     restoreData = async () => {
         let folders;
         folders = await AsyncStorage.getItem('folders');
         folders = JSON.parse(folders);
-        console.log('from storage: ', folders);
+
         // dispatch this data to reducer
         this.props.setStateWithDataFromStorage(folders);
     }

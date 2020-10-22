@@ -18,9 +18,7 @@ export default class ChooseFolderManager extends React.Component {
     }
 
     render() {
-        console.log("jebane prospy: ",this.props);
         const { foldersList, newFolderName, selectedFolderName } = this.state;
-        console.log(foldersList)
         return (
             
                 <View style={styles.wrapper}>
@@ -98,7 +96,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         zIndex: 100,
         backgroundColor: 'white',
-        height: 300
+        height: 250
     },
     title: {
         fontSize: 24,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, StyleSheet, View, Dimensions, BackHandler } from 'react-native';
+import { FlatList, StyleSheet, View, BackHandler } from 'react-native';
 import { connect } from 'react-redux';
 
 import MediaListItem from '../items/MediaListItem';
@@ -8,17 +8,16 @@ import MediaSlider from '../modals/MediaSlider';
 class MediaList extends React.Component {
 
     state = {
-        folder: this.props.folder,
-        mediaItem: {},
+        media: this.props.media,
         selectedMediaItemIndex: null
     }
 
     render() {
-        const { folder, selectedMediaItemIndex } = this.state;
+        const { media, selectedMediaItemIndex } = this.state;
         return(
             <View style={styles.container}>
-                {folder.media.length > 0 && <FlatList
-                    data={folder.media}
+                {media.length > 0 && <FlatList
+                    data={media}
                     keyExtractor={item => item.path}
                     renderItem={({ item, index }) => (
                         <MediaListItem
@@ -32,7 +31,7 @@ class MediaList extends React.Component {
                 />}
                 {selectedMediaItemIndex !== null ?
                     <MediaSlider
-                        media={folder.media}
+                        media={media}
                         onRequestClose={this.backAction}
                         selectedMediaItemIndex={selectedMediaItemIndex}
                     />
@@ -58,15 +57,12 @@ class MediaList extends React.Component {
             this.props.navigation.goBack();
             return;
         }
-        if(this.state.folder && this.props.folder && this.state.folder.media.length !== this.props.folder.media.length) {
-            this.setState({ folder: this.props.folder });
+        if(this.state.media && this.props.media && this.state.media.length !== this.props.media.length) {
+            this.setState({ media: this.props.media });
         }
     }
 
-    openMediaItem = (item, index) => {
-        item.index = index; // add index of this object to folder
-        this.setState({ selectedMediaItemIndex: index });
-    }
+    openMediaItem = index => this.setState({ selectedMediaItemIndex: index });
 
     backAction = () => {
         if(this.state.selectedMediaItemIndex !== null) {
@@ -74,32 +70,35 @@ class MediaList extends React.Component {
             return () => null;
         }
     }
-
 }
 
 const mapStateToProps = (state, props) => {
     if(state.folders.length === 0) {
-        console.log('error powrót na głowna');
         return {
             error: true
         }
     } else {
-        const folder = state.folders.find(item => item.name === props.params.folderName);
-        return {
-            'folder': folder
+        if(props.folderName) {
+            const folder = state.folders.find(item => item.name === props.folderName);
+            return {
+                'media': folder.media
+            }
+        } else {
+            return {
+                'media': props.media
+            }
         }
     }
-    
 }
 
 const mapDispatchToprops = () => {
     return {}
 }
 
-export default connect(mapStateToProps, mapDispatchToprops())(MediaList);
-
 const styles = StyleSheet.create({
     container: {
         flex: 1
     },
 });
+
+export default connect(mapStateToProps, mapDispatchToprops())(MediaList);

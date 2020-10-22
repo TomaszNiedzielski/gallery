@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Image, StyleSheet, FlatList, Text, Dimensions, TouchableNativeFeedback } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 const FolderIcon = ({ item, navigation }) => (
     <View style={styles.itemWrapper}>
-        <TouchableNativeFeedback onPress={() => navigation.navigate('FolderScreen', {
-            'folderName': item.name
-        })}>
+        <TouchableNativeFeedback onPress={() => navigation.navigate('FolderScreen', { 'folderName': item.name })}>
             <View>
                 <Image
                     style={styles.itemImage}
@@ -20,16 +18,12 @@ const FolderIcon = ({ item, navigation }) => (
 );
 
 const FoldersList = () => {
-
     const folders = useSelector(state => state.folders);
     const navigation = useNavigation();
 
-    console.log('gallery folders: ', folders);
-    //console.log('gallery folders: ', folders.length);
-
     return(
         <View style={styles.container}>
-            <View style={{width: '100%', height: 10}}/>
+            <View style={{ width: '100%', height: 10 }}/>
             {folders && folders.length > 0 ?
                 <FlatList
                     data={folders}
@@ -55,7 +49,6 @@ export default FoldersList;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        //alignItems: 'center',
         backgroundColor: 'white'
     },
     itemImage: {
@@ -73,7 +66,6 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     row: {
-        //width: '98%',
         justifyContent: "space-between",
         
     }

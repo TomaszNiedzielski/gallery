@@ -13,7 +13,7 @@ class MediaListItem extends React.Component {
     render() {
         const { item, index, onPressHandler, isRemovingEnabled } = this.props;
         return(
-            <TouchableWithoutFeedback onPress={() => onPressHandler(item, index)}>
+            <TouchableWithoutFeedback onPress={() => onPressHandler(index)}>
                 <View style={styles.container}>
                     <CheckBox
                         value={false}
