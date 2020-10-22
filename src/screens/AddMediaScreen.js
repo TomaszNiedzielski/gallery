@@ -1,14 +1,11 @@
 import React from 'react'
-import { StyleSheet, View, Image, FlatList, Text } from 'react-native';
+import { StyleSheet, View, Image, FlatList, Dimensions } from 'react-native';
+
 import ImagePicker from 'react-native-image-crop-picker';
-import LinearGradient from 'react-native-linear-gradient';
-
-import { Dimensions } from 'react-native';
-import ChooseFolderManager from '../components/modals/ChooseFolderManager';
-
-import { Colors } from '../constans/Colors';
-
 import Icon from 'react-native-vector-icons/Entypo';
+
+import ChooseFolderManager from '../components/modals/ChooseFolderManager';
+import DefaultHeaderBackground from '../components/headers/DefaultHeaderBackground';
 
 import { connect } from 'react-redux';
 import { createFolderAndAddMedia, addMediaToExistingFolder } from '../redux/actions/folders';
@@ -61,7 +58,6 @@ class AddMediaScreen extends React.Component {
     }
 
     componentDidMount() {
-        console.log('to jest kurwa dramat: ', this.props.folders);
         // set state
         this.setState({ folders: this.props.folders });
 
@@ -75,14 +71,7 @@ class AddMediaScreen extends React.Component {
                 color: iconColor
             },
             headerTintColor: iconColor,
-            headerBackground: () => (
-                <LinearGradient
-                  colors={Colors.gradient}
-                  style={{ flex: 1 }}
-                  start={{x: 0, y: 0}}
-                  end={{x: 1, y: 0}}
-                />
-            ),
+            headerBackground: () => <DefaultHeaderBackground />,
         });
     }
 

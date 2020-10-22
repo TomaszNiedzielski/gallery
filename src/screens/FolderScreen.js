@@ -4,9 +4,8 @@ import { View, StyleSheet, TouchableWithoutFeedback, BackHandler } from 'react-n
 import MediaList from '../components/lists/MediaList';
 import Menu from '../components/modals/Menu';
 import ChangeFolderNameManager from '../components/modals/ChangeFolderNameManager';
+import DefaultHeaderBackground from '../components/headers/DefaultHeaderBackground';
 
-import LinearGradient from 'react-native-linear-gradient';
-import { Colors } from '../constans/Colors';
 import Icon from 'react-native-vector-icons/Entypo';
 
 import { connect } from 'react-redux';
@@ -72,14 +71,7 @@ class FolderScreen extends React.Component {
                 color: iconColor
             },
             headerTintColor: iconColor,
-            headerBackground: () => (
-                <LinearGradient
-                    colors={Colors.gradient}
-                    style={{ flex: 1 }}
-                    start={{x: 0, y: 0}}
-                    end={{x: 1, y: 0}}
-                />
-            ),
+            headerBackground: () => <DefaultHeaderBackground />,
             headerRight: () => (
                 <View style={styles.headerRight}>
                     <Icon name="dots-three-vertical" size={this.iconSize} color={this.iconColor} onPress={() => this.setState({ isMenuOpen: !this.state.isMenuOpen })} />

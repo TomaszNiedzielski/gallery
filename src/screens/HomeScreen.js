@@ -1,25 +1,17 @@
-import React from 'react'
-import { View, Text, Image, ScrollView, StyleSheet, AsyncStorage } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, AsyncStorage } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Entypo';
 
 import FoldersList from '../components/lists/FoldersList';
+import DefaultHeaderBackground from '../components/headers/DefaultHeaderBackground';
 
-//import { AsyncStorage } from '@react-native-community/async-storage';
 import { connect } from 'react-redux';
 import { setStateWithDataFromStorage } from '../redux/actions/folders';
 
-import LinearGradient from 'react-native-linear-gradient';
-import { Colors } from '../constans/Colors';
-
 class HomeScreen extends React.Component {
 
-    state = {
-        
-    }
-
     render() {
-
         return (
             <View style={styles.container}>
                 <FoldersList />
@@ -36,6 +28,7 @@ class HomeScreen extends React.Component {
             headerTitleStyle: {
                 color: iconColor
             },
+            headerTintColor: iconColor,
             headerRight: () => (
                 <View style={styles.headerRight}>
                     <Icon name="video" size={iconSize} color={iconColor} style={styles.headerIcon} 
@@ -44,14 +37,7 @@ class HomeScreen extends React.Component {
                         onPress={() => this.props.navigation.navigate('AddMediaScreen', {mediaType: 'image'})} />
                 </View>
             ),
-            headerBackground: () => (
-                <LinearGradient
-                  colors={Colors.gradient}
-                  style={{ flex: 1 }}
-                  start={{x: 0, y: 0}}
-                  end={{x: 1, y: 0}}
-                />
-            ),
+            headerBackground: () => <DefaultHeaderBackground />,
         });
 
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
