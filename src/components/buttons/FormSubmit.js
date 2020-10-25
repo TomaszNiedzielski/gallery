@@ -4,10 +4,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Colors } from '../../constans/Colors';
 
-const FormSubmit = () => {
-    const navigation = useNavigation();
+const FormSubmit = props => {
+    // const navigation = useNavigation();
     return(
-        <TouchableNativeFeedback onPress={() => navigation.navigate('HomeScreen')}>
+        <TouchableNativeFeedback onPress={() => props.onPress()}>
             <View style={styles.button}>
                 <Text style={styles.title}>Submit</Text>
             </View>

@@ -14,14 +14,11 @@ export default class Controls extends React.Component {
     render() {
         const { paused, duration } = this.props;
         const { sliderValue, isVisible } = this.state;
-        console.log('video duration: ', duration);
-        const newDuration = duration;
-        console.log('new duration: ', newDuration);
         return(
             <View style={[styles.container, isVisible === false && { bottom: -150 }]}>
                 <View style={{ width: '100%', marginBottom: 10, marginTop: 5 }}>
                     <Slider
-                        maximumValue={newDuration}
+                        maximumValue={duration}
                         minimumValue={0}
                         minimumTrackTintColor="#307ecc"
                         maximumTrackTintColor="#000000"

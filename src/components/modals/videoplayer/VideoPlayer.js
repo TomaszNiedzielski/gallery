@@ -17,7 +17,7 @@ export default class VideoPlayer extends React.Component {
     }
 
     render() {
-        const { paused, duration, isControlsVisible, currentTime } = this.state;
+        const { paused, duration, isControlsVisible, currentTime, videoPlayerWidth, videoPlayerHeight } = this.state;
         return(
             <TouchableNativeFeedback onPress={() => this.keepControlsVisible()}>
                 <View style={styles.container}>
@@ -25,12 +25,13 @@ export default class VideoPlayer extends React.Component {
                         ref={(ref) => {
                             this.player = ref
                         }}
-                        style={{ width: '100%', height: this.state.videoPlayerHeight }}
+                        style={{ width: videoPlayerWidth, height: videoPlayerHeight }}
                         paused={paused}
                         onLoad={data => this.onLoad(data)}
                         onSeek={(data) => {console.log(data)}}
                         onProgress={data => this.setState({ currentTime: data.currentTime })}
-                        resizeMode="cover"
+                        resizeMode="contain"
+                        //fullscreenOrientation="landscape"
                     />
                     <Controls
                         play={this.play}
@@ -54,24 +55,20 @@ export default class VideoPlayer extends React.Component {
         this.player.seek(newValue);
         this.setState({ currentTime: newValue });
         this.keepControlsVisible();
-
-        console.log('new value: ', newValue)
     }
 
     onLoad = data => {
-        console.log('szerokosc: ', data.naturalSize.width, 'height: ', data.naturalSize.height);
+        this.setState({ duration: data.duration });
+        this.setVideoSize();
+    }
 
-        const windowWidth = Dimensions.get('window').width;
+    setVideoSize = () => {
+        const windowWidth = Dimensions.get('window').width;  // TU JEST NAROZPIERDALANE I ORIENTATION NIE DZIALA
         const windowHeight = Dimensions.get('window').height;
 
-        const videoPlayerWidth = windowWidth;
-
-        const videoPlayerHeight = windowWidth*windowWidth/windowHeight;
-
-        console.log('video player height: ', videoPlayerHeight);
+        let videoPlayerHeight = windowWidth*windowWidth/windowHeight;
 
         this.setState({
-            duration: data.duration,
             videoPlayerHeight: videoPlayerHeight,
             videoPlayerWidth: windowWidth,
         });
@@ -89,12 +86,27 @@ export default class VideoPlayer extends React.Component {
 
     componentDidMount() {
         this.keepControlsVisible();
+
+        this.orientationChange = Dimensions.addEventListener("change", () => {
+            this.setVideoSize();
+            console.log('orientation change');
+        });
     }
 
     componentWillUnmount() {
         clearTimeout(this.controlsTimer);
+        //removeEventListener(this.orientationChange);
     }
 
+    /*isPortrait = () => {
+        const dim = Dimension.get("window")
+        return dim.height >= dim.width
+    }
+      
+    isLandscape = () => {
+        const dim = Dimension.get("window")
+        return dim.width >= dim.height
+    }*/
 }
 
 const styles = StyleSheet.create({
@@ -103,9 +115,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    backgroundVideo: {
-        width: '100%',
-        height: 300
-    },
+    }
 });

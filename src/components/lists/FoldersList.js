@@ -11,7 +11,7 @@ const FolderIcon = ({ item, navigation }) => (
                     style={styles.itemImage}
                     source={{ uri: item.media[0].path }}
                 />
-                <Text>{item.name} ({item.media.length})</Text>
+                <Text style={styles.folderName}>{item.name} ({item.media.length})</Text>
             </View>
         </TouchableNativeFeedback>
     </View>
@@ -49,7 +49,9 @@ export default FoldersList;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
+        // backgroundColor: 'white',
+        //opacity: 0
+        zIndex: 10
     },
     itemImage: {
         width: (Dimensions.get('window').width/2)-20,
@@ -62,12 +64,19 @@ const styles = StyleSheet.create({
         width: (Dimensions.get('window').width/2),
         height: (Dimensions.get('window').width/2)+20,
         marginRight: 3,
-        backgroundColor: 'white',
-        alignItems: 'center'
+        // backgroundColor: 'white',
+        alignItems: 'center',
+        zIndex: 10
     },
     row: {
         justifyContent: "space-between",
         
+    },
+    folderName: {
+        textShadowColor: 'rgba(0, 0, 0, 1)',
+        textShadowOffset: {width: -1, height: 1},
+        textShadowRadius: 10,
+        color: 'white',
     }
 });
 

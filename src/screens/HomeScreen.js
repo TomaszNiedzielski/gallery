@@ -1,20 +1,33 @@
 import React from 'react';
-import { View, StyleSheet, AsyncStorage } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import Icon from 'react-native-vector-icons/Entypo';
 
 import FoldersList from '../components/lists/FoldersList';
 import DefaultHeaderBackground from '../components/headers/DefaultHeaderBackground';
+import SlidingPopupBar from '../components/popups/SlidingPopupBar';
 
 import { connect } from 'react-redux';
 import { setStateWithDataFromStorage } from '../redux/actions/folders';
+
+// test
+import AutoRotateImageModal from '../components/modals/AutoRotateImageModal';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import HomeBackground from '../assets/HomeBackground.png';
 
 class HomeScreen extends React.Component {
 
     render() {
         return (
             <View style={styles.container}>
-                <FoldersList />
+                {<FoldersList />
+                //<AutoRotateImageModal />
+                }
+                <SlidingPopupBar />
+                
+                <Image source={HomeBackground} style={{ height: '100%', width: '100%', position: 'absolute', zIndex: 0 }} />
+                
             </View>
         );
     }
@@ -69,7 +82,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToprops = () => {
-    return {setStateWithDataFromStorage}
+    return { setStateWithDataFromStorage }
 }
 
 export default connect(mapStateToProps, mapDispatchToprops())(HomeScreen);

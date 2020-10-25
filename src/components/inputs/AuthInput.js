@@ -9,7 +9,7 @@ import { Colors } from '../../constans/Colors';
 export default class AuthInput extends React.Component {
 
     render() {
-        const { keyboardType, placeholder } = this.props;
+        const { keyboardType, placeholder, onChangeText } = this.props;
         return(
             <View style={styles.container}>
                 <View style={styles.iconWrapper}>
@@ -19,8 +19,9 @@ export default class AuthInput extends React.Component {
                 </View>
                 <TextInput
                     style={styles.input}
-                    keyboardType={keyboardType}
+                    keyboardType={keyboardType === 'password' ? 'default' : keyboardType}
                     placeholder={placeholder}
+                    onChangeText={text => onChangeText(text)}
                 />
             </View>
         );

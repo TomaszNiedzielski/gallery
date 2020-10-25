@@ -10,22 +10,26 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import React from 'react';
+import { AsyncStorage } from 'react-native';
 
 import HomeScreen from './src/screens/HomeScreen';
 import AddMediaScreen from './src/screens/AddMediaScreen';
 import FolderScreen from './src/screens/FolderScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
+import LoadingScreen from './src/screens/LoadingScreen';
 
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 
 import foldersReducer from './src/redux/reducers/folders';
-import selectedMediaReducer from './src/redux/reducers/selectedMedia'; 
+import selectedMediaReducer from './src/redux/reducers/selectedMedia';
+import userReducer from './src/redux/reducers/user';
 
 const reducers = combineReducers({
     folders: foldersReducer,
-    selectedMedia: selectedMediaReducer
+    selectedMedia: selectedMediaReducer,
+    user: userReducer
 });
 
 const store = createStore(reducers);
@@ -37,6 +41,7 @@ const App = () => {
         <Provider store={store}>
             <NavigationContainer>
                 <Stack.Navigator>
+                    <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
                     <Stack.Screen name="LoginScreen" component={LoginScreen} />
                     <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
                     <Stack.Screen name="HomeScreen" component={HomeScreen} />

@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../constans/Colors';
+import { ApiUrl } from '../constans/ApiUrl';
 
 import UserIcon from '../components/icons/UserIcon';
 import AuthInput from '../components/inputs/AuthInput';
@@ -12,7 +14,10 @@ import AuthRedirectButton from '../components/buttons/AuthRedirectButton';
 export default class RegisterScreen extends React.Component {
 
     state = {
-        isKeyboardVisible: false
+        isKeyboardVisible: false,
+        name: null,
+        email: null,
+        password: null
     }
 
     render() {
@@ -33,16 +38,21 @@ export default class RegisterScreen extends React.Component {
                             <AuthInput
                                 keyboardType="default"
                                 placeholder="name"
+                                onChangeText={text => this.setState({ name: text })}
                             />
                             <AuthInput
                                 keyboardType="email-address"
                                 placeholder="e-mail"
+                                onChangeText={text => this.setState({ email: text })}
                             />
                             <AuthInput
                                 keyboardType="password"
                                 placeholder="password"
+                                onChangeText={text => this.setState({ password: text })}
                             />
-                            <FormSubmit />
+                            <FormSubmit
+                                onPress={this.sendRegisterRequest}
+                            />
                         </View>
                     </ScrollView>
                     {!isKeyboardVisible && <AuthRedirectButton
@@ -61,11 +71,49 @@ export default class RegisterScreen extends React.Component {
         // need this to hide bottom component when keyboad show
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => this.setState({ isKeyboardVisible: true }));
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => this.setState({ isKeyboardVisible: false }));
+        
     }
 
     componentWillUnmount () {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
+    }
+
+    sendRegisterRequest = () => {
+        const { name, email, password } = this.state;
+        fetch(ApiUrl+'register', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                password: password
+            }),
+        })
+        .then((response) => response.json())
+        .then(async(responseJson) => {
+            const userData = {
+                id: responseJson.user.id,
+                name: responseJson.user.name,
+                email: responseJson.user.email,
+                token: responseJson.token
+            };
+
+            // save to storage
+            await AsyncStorage.setItem('userData', JSON.stringify(userData));
+            this.props.navigation.navigate('LoadingScreen');
+        })
+        .catch((error) => {
+            console.log('error: ', error);
+            Alert.alert(
+                'Error',
+                'Sprawdź czy masz połączenie z internetem.',
+            );
+            throw(error);
+        });
     }
 
 }

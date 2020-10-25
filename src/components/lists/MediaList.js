@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, StyleSheet, View, BackHandler } from 'react-native';
+import { FlatList, StyleSheet, View, BackHandler, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 
 import MediaListItem from '../items/MediaListItem';
