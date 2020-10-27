@@ -71,7 +71,6 @@ export default class RegisterScreen extends React.Component {
         // need this to hide bottom component when keyboad show
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => this.setState({ isKeyboardVisible: true }));
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => this.setState({ isKeyboardVisible: false }));
-        
     }
 
     componentWillUnmount () {
@@ -81,6 +80,7 @@ export default class RegisterScreen extends React.Component {
 
     sendRegisterRequest = () => {
         const { name, email, password } = this.state;
+        console.log('apiurl: ', ApiUrl+'register');
         fetch(ApiUrl+'register', {
             method: 'POST',
             headers: {
@@ -90,11 +90,13 @@ export default class RegisterScreen extends React.Component {
             body: JSON.stringify({
                 name: name,
                 email: email,
-                password: password
+                password: password,
+                password_confirmation: password
             }),
         })
         .then((response) => response.json())
         .then(async(responseJson) => {
+            console.log('po rejestrcja: ', responseJson);
             const userData = {
                 id: responseJson.user.id,
                 name: responseJson.user.name,

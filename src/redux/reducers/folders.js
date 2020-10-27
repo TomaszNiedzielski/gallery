@@ -6,7 +6,6 @@ import { ADD_MEDIA_TO_EXISTING_FOLDER,
 } from "../actions/folders";
 
 import { AsyncStorage } from 'react-native';
-import selectedMediaReducer from "./selectedMedia";
 
 let initialState = [];
 

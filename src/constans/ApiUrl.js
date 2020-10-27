@@ -1,3 +1,2 @@
-export const ApiUrl = 'http://10.0.2.2:8000/api/';
-//export const ApiUrl = 'http://127.0.0.1:8000/api/';
-// export const apiImage = 'http://10.0.2.2:8000/storage/';
+//export const ApiUrl = 'http://10.0.2.2:8000/api/';
+export const ApiUrl = 'http://10.33.20.146:8000/api/';

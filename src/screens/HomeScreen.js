@@ -67,10 +67,19 @@ class HomeScreen extends React.Component {
     restoreData = async () => {
         let folders;
         folders = await AsyncStorage.getItem('folders');
-        folders = JSON.parse(folders);
+        if(folder) {
+            folders = JSON.parse(folders);
 
-        // dispatch this data to reducer
-        this.props.setStateWithDataFromStorage(folders);
+            // dispatch this data to reducer
+            this.props.setStateWithDataFromStorage(folders);
+        } else {
+            this.fetchFoldersDataFromApi();
+        }
+        
+    }
+
+    fetchFoldersDataFromApi() {
+        
     }
 
 }
