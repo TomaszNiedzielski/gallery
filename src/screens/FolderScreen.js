@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { removeSelectedMediaFromState } from '../redux/actions/folders';
 import { removeSelectedMediaFromCollection } from '../redux/actions/selectedMedia';
+import { ApiUrl } from '../constans/ApiUrl';
 
 class FolderScreen extends React.Component {
 
@@ -129,7 +130,36 @@ class FolderScreen extends React.Component {
         removeSelectedMediaFromState(selectedMedia, this.state.folderName);
         removeSelectedMediaFromCollection();
 
+        // remove images in server too
+        this.sendRemoveMediaRequest(selectedMedia);
+
         this.handleRemoveMediaManager();
+    }
+
+    sendRemoveMediaRequest(selectedMedia) {
+
+        // get only names from links
+        selectedMedia = selectedMedia.map(mediaLink => {
+            return mediaLink.split('/').pop();
+        });
+        console.log('po wyluskaniu nazw z linkow: ', selectedMedia);
+        fetch(ApiUrl+'media/delete', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                api_token: this.props.user.token,
+                selectedMediaNames: selectedMedia
+            })
+        })
+        .then(() => {
+            console.log('ok');
+        })
+        .catch(error => {
+            console.log(error);
+        });
     }
 
     backAction = () => {
@@ -153,7 +183,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-        selectedMedia: state.selectedMedia
+        selectedMedia: state.selectedMedia,
+        user: state.user
     }
 }
 

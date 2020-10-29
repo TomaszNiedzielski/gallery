@@ -15,6 +15,7 @@ const foldersReducer = (state = initialState, action) => {
     switch(action.type) {
         case SET_STATE_WITH_DATA_FROM_STORAGE:
             console.log('to powinno być w sieci reduxa: ', action.payload.folders);
+            // hard update
             return action.payload.folders;
         case CREATE_FOLDER_AND_ADD_MEDIA:
             updatedState = [action.payload, ...state];
@@ -59,13 +60,20 @@ const foldersReducer = (state = initialState, action) => {
             });
             console.log('updated folder: ', updatedFolder);
 
-            updatedState = updatedState.filter((folder, index) => {
+            updatedState = updatedState.filter((folder) => {
+                // if this is the same folder which we have updated and he has some unremoved media, let it go
                 if(folder.name === updatedFolder.name && updatedFolder.media.length > 0) {
                     folder = {
                         ...updatedFolder
                     }
                     return folder;
                 }
+                // if the same folder, but doesn't have media in it, return nothing
+                if(folder.name === updatedFolder.name && updatedFolder.media.length === 0) {
+                    return;
+                }
+                // if this is normal folder return him
+                return folder;
             });
 
             console.log('after removing selected: ', updatedState);

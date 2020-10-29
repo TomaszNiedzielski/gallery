@@ -5,6 +5,7 @@ import TextInputManager from './TextInputManager';
 
 import { connect } from 'react-redux';
 import { changeFolderName } from '../../redux/actions/folders';
+import { ApiUrl } from '../../constans/ApiUrl';
 
 class ChangeFolderNameManager extends React.Component {
 
@@ -42,7 +43,34 @@ class ChangeFolderNameManager extends React.Component {
     onConfirmHandler = newValue => {
         const oldFolderName = this.state.folderName;
         this.props.changeFolderName(oldFolderName, newValue);
+
+        // and api request
+        this.sendChangeFolderNameRequest(oldFolderName, newValue);
+
+        // and close modal
         this.props.onRequestClose(newValue);
+    }
+
+    sendChangeFolderNameRequest(oldFolderName, newFolderName) {
+        fetch(ApiUrl+'folder/rename', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                api_token: this.props.user.token,
+                oldFolderName: oldFolderName,
+                newFolderName: newFolderName
+            })
+        })
+        .then(response => response.json())
+        .then((responseJson) => {
+            console.log(responseJson);
+        })
+        .catch(error => {
+            console.log(error);
+        });
     }
 
 }
@@ -56,7 +84,9 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-    return {}
+    return {
+        user: state.user
+    }
 }
 
 const mapDispatchToprops = () => {

@@ -20,7 +20,7 @@ const FolderIcon = ({ item, navigation }) => (
 const FoldersList = () => {
     const folders = useSelector(state => state.folders);
     const navigation = useNavigation();
-
+    console.log('state.folders: ', folders);
     return(
         <View style={styles.container}>
             <View style={{ width: '100%', height: 10 }}/>
@@ -49,8 +49,6 @@ export default FoldersList;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: 'white',
-        //opacity: 0
         zIndex: 10
     },
     itemImage: {

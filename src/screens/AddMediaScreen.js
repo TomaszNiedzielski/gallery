@@ -110,26 +110,34 @@ class AddMediaScreen extends React.Component {
 
     dispatchSelectedMediaToApi = async () => {
         const { selectedMedia, selectedFolder } = this.state;
+
+        // before start uploading set in state number of items to upload
+
         
-        selectedMedia.forEach(mediaItem => {
+        selectedMedia.forEach((mediaItem, index) => {
 
             let formData = new FormData();
             let extension = mediaItem.path.split('.').pop();
-            let imgDetails = {};
+            let mediaDetails = {};
             if (extension === 'png') {
-                imgDetails = {
+                mediaDetails = {
                     name: "image.png",
                     type: "image/png",
                 }
-            } else {
-                imgDetails = {
+            } else if(extension === 'jpg') {
+                mediaDetails = {
                     name: "image.jpg",
                     type: "image/jpeg",
+                }
+            } else if(extension === 'mp4') {
+                mediaDetails = {
+                    name: "video.mp4",
+                    type: "video/mp4"
                 }
             }
 
             formData.append("media", {
-                ...imgDetails,
+                ...mediaDetails,
                 uri: Platform.OS === "android" ? mediaItem.path : mediaItem.path.replace("file://", ""),
             });
             formData.append("api_token", this.props.user.token);
@@ -144,12 +152,41 @@ class AddMediaScreen extends React.Component {
             .then((responseJson) => {
                 console.log('responseJson: ', responseJson);
                 console.log("media sent!");
-                this.dispatchSelectedMediaToRedux();
+
+                // if media item is uploaded set status as uploaded
+                let updatedSelectedMedia = this.state.selectedMedia;
+                updatedSelectedMedia[index].uploaded = true;
+                this.setState({ selectedMedia: updatedSelectedMedia });
+                this.isEveryItemUploaded();
             })
             .catch((e) => {
                 console.log(e);
+                let updatedSelectedMedia = this.state.selectedMedia;
+                updatedSelectedMedia[index].uploaded = false;
+                this.setState({ selectedMedia: updatedSelectedMedia });
+                this.isEveryItemUploaded();
             });
 
+        });
+        // when loop has finished her job, check if every item has been uploaded
+
+        // we can dispatch now to props but function isEveryItemUploaded supposed to be better
+        this.dispatchSelectedMediaToRedux();
+    }
+
+    isEveryItemUploaded = () => {
+        const { selectedMedia } = this.state;
+        console.log("isEveryItemUploaded media state: ", selectedMedia);
+        selectedMedia.forEach(selectedItem => {
+            console.log('selected item uploaded: ', selectedItem.uploaded);
+            if(selectedItem.uploaded === true) {
+                console.log('this item is uploaded: ', selectedItem);
+            } else if(selectedItem.uploaded === false) {
+                console.log('There was no error when upload');
+                alert("Something went wrong!");
+            } else if(selectedItem.uploaded === undefined) {
+                console.log('caly czas kurwa undefined');
+            }
         });
     }
     

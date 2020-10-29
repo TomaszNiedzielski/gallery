@@ -15,18 +15,19 @@ import { setStateWithDataFromStorage } from '../redux/actions/folders';
 import AutoRotateImageModal from '../components/modals/AutoRotateImageModal';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import HomeBackground from '../assets/HomeBackground.png';
+import { ApiUrl } from '../constans/ApiUrl';
 
 class HomeScreen extends React.Component {
 
     render() {
         return (
             <View style={styles.container}>
-                {<FoldersList />
-                //<AutoRotateImageModal />
-                }
-                <SlidingPopupBar />
+                {//<FoldersList />
+                <AutoRotateImageModal />
+                //<SlidingPopupBar />
                 
-                <Image source={HomeBackground} style={{ height: '100%', width: '100%', position: 'absolute', zIndex: 0 }} />
+               // <Image source={HomeBackground} style={{ height: '100%', width: '100%', position: 'absolute', zIndex: 0 }} />
+            }
                 
             </View>
         );
@@ -67,26 +68,44 @@ class HomeScreen extends React.Component {
     restoreData = async () => {
         let folders;
         folders = await AsyncStorage.getItem('folders');
-        if(folder) {
+        if(folders && folders !== '[]') {
             folders = JSON.parse(folders);
+            console.log('co za folders: ', folders);
 
             // dispatch this data to reducer
             this.props.setStateWithDataFromStorage(folders);
-        } else {
-            this.fetchFoldersDataFromApi();
         }
-        
+        this.fetchFoldersDataFromApi();
     }
 
     fetchFoldersDataFromApi() {
-        
+        console.log('fetching...');
+        fetch(ApiUrl+'media/load', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                api_token: this.props.user.token
+            })
+        })
+        .then(response => response.json())
+        .then(responseJson => {
+            console.log('media from api: ', responseJson);
+            this.props.setStateWithDataFromStorage(responseJson);
+        })
+        .catch(error => {
+            console.log(error);
+        });
     }
 
 }
 
 const mapStateToProps = (state) => {
     return {
-        'folders': state.folders
+        folders: state.folders,
+        user: state.user
     }
 }
 

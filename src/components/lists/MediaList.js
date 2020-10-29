@@ -80,8 +80,14 @@ const mapStateToProps = (state, props) => {
     } else {
         if(props.folderName) {
             const folder = state.folders.find(item => item.name === props.folderName);
-            return {
-                'media': folder.media
+            if(folder)  {
+                return {
+                    'media': folder.media
+                }
+            } else {
+                return {
+                    error: true
+                }
             }
         } else {
             return {
