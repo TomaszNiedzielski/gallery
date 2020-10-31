@@ -22,8 +22,8 @@ class HomeScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                {//<FoldersList />
-                <AutoRotateImageModal />
+                {<FoldersList />
+                //<AutoRotateImageModal />
                 //<SlidingPopupBar />
                 
                // <Image source={HomeBackground} style={{ height: '100%', width: '100%', position: 'absolute', zIndex: 0 }} />
@@ -59,6 +59,7 @@ class HomeScreen extends React.Component {
         });
 
         this.restoreData();
+        // AsyncStorage.clear();
     }
 
     componentWillUnmount = () => this.unsubscribe();

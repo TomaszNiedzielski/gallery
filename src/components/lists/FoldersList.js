@@ -2,12 +2,13 @@ import React from 'react';
 import { View, Image, StyleSheet, FlatList, Text, Dimensions, TouchableNativeFeedback } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
 
 const FolderIcon = ({ item, navigation }) => (
     <View style={styles.itemWrapper}>
         <TouchableNativeFeedback onPress={() => navigation.navigate('FolderScreen', { 'folderName': item.name })}>
             <View>
-                <Image
+                <FastImage
                     style={styles.itemImage}
                     source={{ uri: item.media[0].path }}
                 />

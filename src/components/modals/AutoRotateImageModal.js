@@ -2,63 +2,94 @@ import React from 'react';
 import { View, Image, StyleSheet, Modal, Dimensions, StatusBar } from 'react-native';
 
 import ScalableImage from '../images/ScalableImage';
+import FastImage from 'react-native-fast-image';
+
 
 export default class AutoRotateImageModal extends React.Component {
 
     state = {
-        path: "file:///data/user/0/com.gallery/cache/react-native-image-crop-picker/Screenshot_2020-10-22-16-20-38.png",
-        isScreenPortrait: false,
+        path: this.props.path,
+        originalImageWidth: this.props.width,
+        originalImageHeight: this.props.height,
+        isScreenPortrait: true,
         isImagePortrait: null,
         screenHeight: Dimensions.get('window').height,
         screenWidth: Dimensions.get('window').width,
-        statusBarHeight: StatusBar.currentHeight
     }
 
     render() {
-        const { path, isScreenPortrait, isImagePortrait, screenHeight, screenWidth, statusBarHeight } = this.state;
+        const { path, isScreenPortrait, isImagePortrait, screenHeight, screenWidth, originalImageWidth, originalImageHeight } = this.state;
+        console.log('is path? ', path);
+        console.log('orinal height: ', originalImageHeight);
+        console.log('orinal width: ', originalImageWidth);
+
         return(
-            <Modal>
-                <View style={styles.container}>
-                    {isScreenPortrait ? 
-                    <ScalableImage // screen is portrait
-                        source={{ uri: path }}
-                        width={screenWidth}
-                        height={isImagePortrait ? screenHeight-statusBarHeight : null}
-                    /> : 
-                    <ScalableImage // screen is landscape
-                        source={{ uri: path }}
-                        width={isImagePortrait ? null : screenWidth}
-                        height={isImagePortrait ? screenHeight-statusBarHeight : null}
-                    />}
-                </View>
-            </Modal>
+            <View style={styles.container}>
+                {isScreenPortrait && 
+                <ScalableImage // screen is portrait
+                    source={{ uri: path }}
+                    width={screenWidth}
+                    //height={isImagePortrait ? screenHeight : null}
+                    originalWidth={originalImageHeight}
+                    originalHeight={originalImageWidth}
+                /> /*: 
+                <ScalableImage // screen is landscape
+                    source={{ uri: path }}
+                    width={isImagePortrait ? null : screenWidth}
+                    height={isImagePortrait ? screenHeight : null}
+                    originalWidth={originalImageWidth}
+                    originalHeight={originalImageHeight}
+                />*/}
+            </View>
         );
     }
 
     componentDidMount() {
-        this.getOriginalSizeOfImage();
-        this.orientationChange = Dimensions.addEventListener("change", () => {
+        // check if image is portrait
+        const isImagePortrait = this.state.originalImageHeight >= this.state.originalImageWidth;
+        console.log('is image portrat: ', isImagePortrait);
+        this.setState({ isImagePortrait: isImagePortrait });
+
+
+        // set real size
+        if(this.props.width > this.props.height) {
+            this.setState({ originalImageHeight: this.props.height, originalImageWidth: this.props.width });
+        } else {
+            this.setState({ originalImageHeight: this.props.width, originalImageWidth: this.props.height });
+        }
+
+
+        // check if screen is portrait
+        const isScreenPortrait = this.isScreenPortrait();
+        this.setState({ isScreenPortrait: isScreenPortrait });
+        Dimensions.addEventListener("change", () => {
             const dimensions = Dimensions.get('window');
+            const isScreenPortrait = this.isScreenPortrait();
             this.setState({
                 screenHeight: dimensions.height,
-                screenWidth: dimensions.width
+                screenWidth: dimensions.width,
+                isScreenPortrait: isScreenPortrait
             });
         });
     }
 
-    getOriginalSizeOfImage = async () => {
-        await Image.getSize(this.state.path, (width, height) => {
-            const isImagePortrait = height >= width;
-            this.setState({ isImagePortrait: isImagePortrait });
-        });
+    componentWillUnmount() {
+        Dimensions.removeEventListener('change');
     }
+
+    isScreenPortrait = () => {
+        const dimensions = Dimensions.get('window');
+        return dimensions.height >= dimensions.width;
+    }
+    
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'black',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     image: {
         width: '100%',

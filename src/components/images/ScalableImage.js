@@ -12,12 +12,14 @@ import {
     ImageBackground
 } from 'react-native';
 
+import FastImage from 'react-native-fast-image';
+
 const resolveAssetSource = Image.resolveAssetSource;
 
 const ScalableImage = props => {
     const ImageComponent = props.background
         ? ImageBackground
-        : Image;
+        : FastImage;
 
     const [scalableWidth, setScalableWidth] = useState(null);
     const [scalableHeight, setScalableHeight] = useState(null);
@@ -55,11 +57,12 @@ const ScalableImage = props => {
                 ? source.uri
                 : source;
 
-            Image.getSize(
+            /*Image.getSize(
                 sourceToUse,
                 (width, height) => adjustSize(width, height, props),
                 console.err
-            );
+            );*/
+            adjustSize(props.originalWidth, props.originalHeight, props);
         }
         else {
             const sourceToUse = resolveAssetSource(source);
@@ -73,7 +76,7 @@ const ScalableImage = props => {
         let ratio = 1;
 
         if (width && height) {
-            ratio = Math.min(width / sourceWidth, height / sourceHeight);
+            ratio = Math.max(width / sourceWidth, height / sourceHeight);
         }
         else if (width) {
             ratio = width / sourceWidth;

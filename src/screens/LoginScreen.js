@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback, ScrollView, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, TouchableWithoutFeedback, ScrollView, Keyboard, Alert } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../constans/Colors';
@@ -8,11 +9,14 @@ import UserIcon from '../components/icons/UserIcon';
 import AuthInput from '../components/inputs/AuthInput';
 import FormSubmit from '../components/buttons/FormSubmit';
 import AuthRedirectButton from '../components/buttons/AuthRedirectButton';
+import { ApiUrl } from '../constans/ApiUrl';
 
 export default class LoginScreen extends React.Component {
 
     state = {
-        isKeyboardVisible: false
+        isKeyboardVisible: false,
+        email: null,
+        password: null
     }
 
     render() {
@@ -33,12 +37,16 @@ export default class LoginScreen extends React.Component {
                             <AuthInput 
                                 keyboardType="email-address"
                                 placeholder="e-mail"
+                                onChangeText={text => this.setState({ email: text })}
                             />
                             <AuthInput
                                 keyboardType="password"
                                 placeholder="password"
+                                onChangeText={text => this.setState({ password: text })}
                             />
-                            <FormSubmit />
+                            <FormSubmit
+                                onPress={this.sendLoginRequest}
+                            />
                         </View>
                     </ScrollView>
                     {!isKeyboardVisible && <AuthRedirectButton
@@ -62,6 +70,43 @@ export default class LoginScreen extends React.Component {
     componentWillUnmount () {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
+    }
+
+    sendLoginRequest = () => {
+        const { email, password } = this.state;
+        fetch(ApiUrl+'login', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            }),
+        })
+        .then((response) => response.json())
+        .then(async(responseJson) => {
+            console.log('po logowaniu: ', responseJson);
+            const userData = {
+                id: responseJson.user.id,
+                name: responseJson.user.name,
+                email: responseJson.user.email,
+                token: responseJson.token
+            };
+
+            // save to storage
+            await AsyncStorage.setItem('userData', JSON.stringify(userData));
+            this.props.navigation.navigate('LoadingScreen');
+        })
+        .catch((error) => {
+            console.log('error: ', error);
+            Alert.alert(
+                'Error',
+                'Sprawdź czy masz połączenie z internetem.',
+            );
+            throw(error);
+        });
     }
 
 }

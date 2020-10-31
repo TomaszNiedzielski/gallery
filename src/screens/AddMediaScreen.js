@@ -77,8 +77,19 @@ class AddMediaScreen extends React.Component {
     openPicker = mediaType => {
         ImagePicker.openPicker({
             multiple: true,
-            mediaType: mediaType
+            mediaType: mediaType,
         }).then(media => {
+
+            // open cropper
+            ImagePicker.openCropper({
+                path: media[0].path,
+                //width: 300,
+                //height: 400
+            }).then(image => {
+                console.log(image);
+            });
+
+
             if(media.length > 0) {
                 this.setState({ selectedMedia: media });
             } else {
@@ -142,6 +153,9 @@ class AddMediaScreen extends React.Component {
             });
             formData.append("api_token", this.props.user.token);
             formData.append("folderName", selectedFolder);
+            formData.append("height", mediaItem.height);
+            formData.append("width", mediaItem.width);
+
             console.log(formData);
 
             fetch(ApiUrl+'media/create', {
