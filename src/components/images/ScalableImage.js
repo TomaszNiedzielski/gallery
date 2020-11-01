@@ -76,7 +76,7 @@ const ScalableImage = props => {
         let ratio = 1;
 
         if (width && height) {
-            ratio = Math.max(width / sourceWidth, height / sourceHeight);
+            ratio = Math.min(width / sourceWidth, height / sourceHeight);
         }
         else if (width) {
             ratio = width / sourceWidth;

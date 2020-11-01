@@ -78,23 +78,50 @@ class AddMediaScreen extends React.Component {
         ImagePicker.openPicker({
             multiple: true,
             mediaType: mediaType,
-        }).then(media => {
-
+        }).then(async media => {
+            console.log('before resizing: ', media);
             // open cropper
-            ImagePicker.openCropper({
-                path: media[0].path,
-                //width: 300,
-                //height: 400
-            }).then(image => {
-                console.log(image);
-            });
+            // let croppedMedia = []; // define array for media after cropping
+            /*const croppedMedia = new Promise(media.forEach(async (mediaItem, index) => {
+                let croppedMediaItem;
+                await ImagePicker.openCropper({
+                    path: mediaItem.path,
+                }).then(image => {
+                    console.log('after resizing: ', image);
+                    croppedMediaItem = image;
+                    console.log('cropped meida item: ', croppedMediaItem);
+                    media[index] = image;
+                });
+            }));*/
+            if(mediaType === 'image') {
+                // new way
+                let index = 0;
+                let croppedMedia = media;
+                let edited = false;
 
+                const openCropper = async(index) => {
+                    console.log('chris brain: ', media[index]);
+                    ImagePicker.openCropper({
+                        path: media[index].path,
+                    }).then(image => {
+                        edited = true;
+                        croppedMedia[index] = image;
+                        // if not every items are edited
+                        if(index < media.length-1) {
+                            index++;
+                            openCropper(index);
+                        } else { // if every item has been edited
+                            console.log('cropped media: ', croppedMedia);
+                            this.setState({ selectedMedia: croppedMedia });
+                        }
+                    });
+                }
 
-            if(media.length > 0) {
+                openCropper(index);
+            } else { // if video
                 this.setState({ selectedMedia: media });
-            } else {
-                this.props.navigation.goBack();
             }
+
         }).catch(e => {
             this.props.navigation.goBack();
         });
