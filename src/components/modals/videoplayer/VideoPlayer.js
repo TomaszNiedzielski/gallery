@@ -9,7 +9,7 @@ export default class VideoPlayer extends React.Component {
 
     state = {
         isControlsVisible: true,
-        paused: false,
+        paused: true,
         duration: null,
         videoPlayerHeight: null,
         videoPlayerWidth: null,
@@ -18,7 +18,9 @@ export default class VideoPlayer extends React.Component {
 
     render() {
         const { paused, duration, isControlsVisible, currentTime, videoPlayerWidth, videoPlayerHeight } = this.state;
+        console.log('curreny time: ', currentTime);
         return(
+            <>
             <TouchableNativeFeedback onPress={() => this.keepControlsVisible()}>
                 <View style={styles.container}>
                     <Video source={{ uri: this.props.uri }}   // Can be a URL or a local file.
@@ -33,28 +35,27 @@ export default class VideoPlayer extends React.Component {
                         resizeMode="contain"
                         //fullscreenOrientation="landscape"
                     />
-                    <Controls
-                        play={this.play}
-                        paused={paused}
-                        seek={(newValue) => this.seek(newValue)}
-                        duration={duration}
-                        sliderValue={currentTime}
-                        isVisible={isControlsVisible}
-                    />
                 </View>
             </TouchableNativeFeedback>
+            <Controls
+                play={this.play}
+                paused={paused}
+                seek={(newValue) => this.seek(newValue)}
+                duration={duration}
+                sliderValue={currentTime}
+                isVisible={isControlsVisible}
+            />
+            </>
         );
     }
 
     play = () => {
         this.setState({ paused: !this.state.paused });
-        this.keepControlsVisible();
     }
 
     seek = newValue => {
         this.player.seek(newValue);
         this.setState({ currentTime: newValue });
-        this.keepControlsVisible();
     }
 
     onLoad = data => {
@@ -75,16 +76,19 @@ export default class VideoPlayer extends React.Component {
     }
 
     keepControlsVisible = () => {
-        clearTimeout(this.controlsTimer);
+        //clearTimeout(this.controlsTimer);
 
-        this.setState({ isControlsVisible: true });
+        this.setState({ isControlsVisible: !this.state.isControlsVisible });
 
-        this.controlsTimer = setTimeout(() => {
-            this.setState({ isControlsVisible: false });
-        }, 6000);
+        //this.controlsTimer = setTimeout(() => this.setControlsVisible, 3000);
+    }
+
+    setControlsVisible = () => {
+        this.setState({ isControlsVisible: false });
     }
 
     componentDidMount() {
+        console.log('video player component did mount');
         this.keepControlsVisible();
 
         this.orientationChange = Dimensions.addEventListener("change", () => {
@@ -94,7 +98,7 @@ export default class VideoPlayer extends React.Component {
     }
 
     componentWillUnmount() {
-        clearTimeout(this.controlsTimer);
+        //clearTimeout(this.controlsTimer);
         //removeEventListener(this.orientationChange);
     }
 

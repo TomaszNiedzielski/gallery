@@ -43,7 +43,6 @@ export default class MediaSlider extends React.Component {
                                 width: screenWidth,
                                 backgroundColor: 'black'
                             }}>
-                                
                                 {!item.duration
                                 ? <View style={styles.mediaItemContainer}>
                                     <FastImage
@@ -55,7 +54,6 @@ export default class MediaSlider extends React.Component {
                                     />
                                 </View>
                                 : <VideoPlayer uri={item.path} />}
-                                
                             </View>
                         )}
                     /> : null}
@@ -75,7 +73,7 @@ export default class MediaSlider extends React.Component {
 
         this.setState({ isScreenPortrait: isScreenPortrait });
         Dimensions.addEventListener("change", () => {
-            this.setState({ mounted: false });
+            //this.setState({ mounted: false });
             const dimensions = Dimensions.get('window');
             const isScreenPortrait = dimensions.height > dimensions.width;
             this.setState({
@@ -87,7 +85,7 @@ export default class MediaSlider extends React.Component {
             this.setState({ selectedMediaItemIndex: null });
             this.setState({ selectedMediaItemIndex: selectedMediaItemIndex });
             //setTimeout(() => {
-                this.setState({ mounted: true });
+                //this.setState({ mounted: true });
             //}, 19000);
         });
     }
