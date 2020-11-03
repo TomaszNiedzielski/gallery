@@ -79,58 +79,39 @@ class AddMediaScreen extends React.Component {
             mediaType: mediaType,
         }).then(async media => {
             if(mediaType === 'image') {
-                // new way
+                // Open cropper for every selected image.
                 let index = 0;
                 let croppedMedia = media;
-
                 const openCropper = async(index) => {
-                    console.log('chris brain: ', media[index]);
                     ImagePicker.openCropper({
                         path: media[index].path,
                     }).then(image => {
                         croppedMedia[index] = image;
-                        // if not every items are edited
+                        // If not every images are edited the repeat function for the next image.
                         if(index < media.length-1) {
                             index++;
                             openCropper(index);
-                        } else { // if every item has been edited
+                        } else {
+                            // If every item has been edited then set state with edited media.
                             this.setState({ selectedMedia: croppedMedia });
                         }
                     });
                 }
                 openCropper(index);
             } else { 
-                // if this is video
+                // If media item is an video we currently cannot edit him.
                 this.setState({ selectedMedia: media });
             }
         }).catch(e => {
+            // If action is back or any error occured we need to go back to home screen.
             this.props.navigation.goBack();
         });
-    }
-
-    dispatchSelectedMediaToRedux() {
-        const { selectedFolder, selectedMedia } = this.state;
-        // after success dispatch to server all items
-        // check if it is new folder or already existing
-        const isThisExistingFolder = this.props.folders.find(folder => folder.name === selectedFolder);
-
-        if(isThisExistingFolder === undefined) {
-            const folder = {
-                name: selectedFolder,
-                media: selectedMedia
-            }
-            this.props.createFolderAndAddMedia(folder);
-        } else {
-            this.props.addMediaToExistingFolder(selectedFolder, selectedMedia);
-        }
-        this.props.navigation.navigate('HomeScreen');
-        
     }
 
     dispatchSelectedMediaToApi = async () => {
         const { selectedMedia, selectedFolder } = this.state;
 
-        // before start uploading set in state number of items to upload
+        // Make separate call for every media item.
         selectedMedia.forEach((mediaItem, index) => {
 
             let formData = new FormData();
@@ -170,24 +151,24 @@ class AddMediaScreen extends React.Component {
             .then((responseJson) => {
                 // if media item is uploaded set status as uploaded
                 console.log("kod", responseJson);
-                let updatedSelectedMedia = this.state.selectedMedia;
-                updatedSelectedMedia[index].uploaded = true;
-                this.setState({ selectedMedia: updatedSelectedMedia });
-                this.isEveryItemUploaded();
+                this.afterUploadToApi(true);
             })
             .catch((e) => {
                 console.log(e);
-                let updatedSelectedMedia = this.state.selectedMedia;
-                updatedSelectedMedia[index].uploaded = false;
-                this.setState({ selectedMedia: updatedSelectedMedia });
-                this.isEveryItemUploaded();
+                this.afterUploadToApi(false);
             });
 
         });
-        // when loop has finished her job, check if every item has been uploaded
 
         // we can dispatch now to props but function isEveryItemUploaded supposed to be better
         this.dispatchSelectedMediaToRedux();
+    }
+
+    afterUploadToApi = (isItemUploaded) => {
+        let updatedSelectedMedia = this.state.selectedMedia;
+        updatedSelectedMedia[index].uploaded = isItemUploaded;
+        this.setState({ selectedMedia: updatedSelectedMedia });
+        this.isEveryItemUploaded();
     }
 
     isEveryItemUploaded = () => {
@@ -204,6 +185,26 @@ class AddMediaScreen extends React.Component {
                 console.log('caly czas kurwa undefined');
             }
         });
+    }
+
+    dispatchSelectedMediaToRedux() {
+        const { selectedFolder, selectedMedia } = this.state;
+        // After success dispatch to server all items
+
+        // Check if it is new folder or already existing
+        const isThisExistingFolder = this.props.folders.find(folder => folder.name === selectedFolder);
+
+        if(isThisExistingFolder === undefined) {
+            const folder = {
+                name: selectedFolder,
+                media: selectedMedia
+            }
+            this.props.createFolderAndAddMedia(folder);
+        } else {
+            this.props.addMediaToExistingFolder(selectedFolder, selectedMedia);
+        }
+        this.props.navigation.navigate('HomeScreen');
+        
     }
 }
 
