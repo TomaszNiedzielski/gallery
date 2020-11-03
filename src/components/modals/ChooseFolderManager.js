@@ -20,40 +20,38 @@ export default class ChooseFolderManager extends React.Component {
     render() {
         const { foldersList, newFolderName, selectedFolderName } = this.state;
         return (
-            
-                <View style={styles.wrapper}>
-                    <View style={styles.container}>
-                        <View style={styles.addFolderWrapper}>
+            <View style={styles.wrapper}>
+                <View style={styles.container}>
+                    <View style={styles.addFolderWrapper}>
                         <Text style={styles.title}>Choose a folder</Text>
-                            <TextInput
-                                placeholder="Create new folder"
-                                onChangeText={text => this.onTypingFolderName(text)}
-                                style={styles.input}
-                            />
-                        </View>
-                        {newFolderName.length > 0 &&
-                            <FolderItem
-                                onSelectFolder={this.onSelectFolder}
-                                item={{name: newFolderName, media: []}}
-                                selectedFolderName={selectedFolderName}
-                            />
-                        }
-                        {foldersList.length > 0 ?
-                            <FlatList
-                                data={foldersList}
-                                keyExtractor={item => item.name}
-                                renderItem={({ item }) => (
-                                    <FolderItem
-                                        onSelectFolder={this.onSelectFolder}
-                                        item={item}
-                                        selectedFolderName={selectedFolderName}
-                                    />
-                                )}
-                            />
-                        : null}
+                        <TextInput
+                            placeholder="Create new folder"
+                            onChangeText={text => this.onTypingFolderName(text)}
+                            style={styles.input}
+                        />
                     </View>
+                    {newFolderName.length > 0 &&
+                        <FolderItem
+                            onSelectFolder={this.onSelectFolder}
+                            item={{name: newFolderName, media: []}}
+                            selectedFolderName={selectedFolderName}
+                        />
+                    }
+                    {foldersList.length > 0 ?
+                        <FlatList
+                            data={foldersList}
+                            keyExtractor={item => item.name}
+                            renderItem={({ item }) => (
+                                <FolderItem
+                                    onSelectFolder={this.onSelectFolder}
+                                    item={item}
+                                    selectedFolderName={selectedFolderName}
+                                />
+                            )}
+                        />
+                    : null}
                 </View>
-            
+            </View>
         );
     }
 
@@ -99,12 +97,13 @@ const styles = StyleSheet.create({
         height: 250
     },
     title: {
-        fontSize: 24,
+        fontSize: 19,
         textAlign: 'center',
         marginVertical: 10,
         fontWeight: 'bold',
         borderBottomColor: 'gray',
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
+        color: 'gray'
     },
     folder: {
         fontSize: 17,
@@ -123,6 +122,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 50,
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        height: 40
     }
 });
