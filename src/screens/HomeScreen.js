@@ -59,7 +59,8 @@ class HomeScreen extends React.Component {
         });
 
         this.restoreData();
-        // AsyncStorage.clear();
+        //AsyncStorage.clear();
+        //this.props.navigation.navigate('LoadingScreen');
     }
 
     componentWillUnmount = () => this.unsubscribe();
@@ -93,6 +94,7 @@ class HomeScreen extends React.Component {
         })
         .then(response => response.json())
         .then(responseJson => {
+            
             console.log('media from api: ', responseJson);
             this.props.setStateWithDataFromStorage(responseJson);
         })

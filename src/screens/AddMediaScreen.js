@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, View, Platform } from 'react-native';
-import PropTypes from 'prop-types';
 
 import ImagePicker from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/Entypo';
@@ -79,49 +78,31 @@ class AddMediaScreen extends React.Component {
             multiple: true,
             mediaType: mediaType,
         }).then(async media => {
-            console.log('before resizing: ', media);
-            // open cropper
-            // let croppedMedia = []; // define array for media after cropping
-            /*const croppedMedia = new Promise(media.forEach(async (mediaItem, index) => {
-                let croppedMediaItem;
-                await ImagePicker.openCropper({
-                    path: mediaItem.path,
-                }).then(image => {
-                    console.log('after resizing: ', image);
-                    croppedMediaItem = image;
-                    console.log('cropped meida item: ', croppedMediaItem);
-                    media[index] = image;
-                });
-            }));*/
             if(mediaType === 'image') {
                 // new way
                 let index = 0;
                 let croppedMedia = media;
-                let edited = false;
 
                 const openCropper = async(index) => {
                     console.log('chris brain: ', media[index]);
                     ImagePicker.openCropper({
                         path: media[index].path,
                     }).then(image => {
-                        edited = true;
                         croppedMedia[index] = image;
                         // if not every items are edited
                         if(index < media.length-1) {
                             index++;
                             openCropper(index);
                         } else { // if every item has been edited
-                            console.log('cropped media: ', croppedMedia);
                             this.setState({ selectedMedia: croppedMedia });
                         }
                     });
                 }
-
                 openCropper(index);
-            } else { // if video
+            } else { 
+                // if this is video
                 this.setState({ selectedMedia: media });
             }
-
         }).catch(e => {
             this.props.navigation.goBack();
         });
@@ -150,8 +131,6 @@ class AddMediaScreen extends React.Component {
         const { selectedMedia, selectedFolder } = this.state;
 
         // before start uploading set in state number of items to upload
-
-        
         selectedMedia.forEach((mediaItem, index) => {
 
             let formData = new FormData();
@@ -183,18 +162,14 @@ class AddMediaScreen extends React.Component {
             formData.append("height", mediaItem.height);
             formData.append("width", mediaItem.width);
 
-            console.log(formData);
-
             fetch(ApiUrl+'media/create', {
                 method: 'POST',
                 body: formData
             })
-            .then((response) => response.json())
+            .then((response) => response.text())
             .then((responseJson) => {
-                console.log('responseJson: ', responseJson);
-                console.log("media sent!");
-
                 // if media item is uploaded set status as uploaded
+                console.log("kod", responseJson);
                 let updatedSelectedMedia = this.state.selectedMedia;
                 updatedSelectedMedia[index].uploaded = true;
                 this.setState({ selectedMedia: updatedSelectedMedia });
@@ -230,8 +205,6 @@ class AddMediaScreen extends React.Component {
             }
         });
     }
-    
-
 }
 
 const styles = StyleSheet.create({

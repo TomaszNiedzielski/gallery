@@ -80,6 +80,7 @@ export default class RegisterScreen extends React.Component {
 
     sendRegisterRequest = () => {
         const { name, email, password } = this.state;
+
         console.log('apiurl: ', ApiUrl+'register');
         fetch(ApiUrl+'register', {
             method: 'POST',
@@ -92,20 +93,23 @@ export default class RegisterScreen extends React.Component {
                 email: email,
                 password: password,
                 password_confirmation: password
-            }),
+            })
         })
         .then((response) => response.json())
         .then(async(responseJson) => {
             console.log('po rejestrcja: ', responseJson);
-            const userData = {
-                id: responseJson.user.id,
-                name: responseJson.user.name,
-                email: responseJson.user.email,
-                token: responseJson.token
-            };
-
-            // save to storage
-            await AsyncStorage.setItem('userData', JSON.stringify(userData));
+            if(responseJson.token) {
+                const userData = {
+                    id: responseJson.id,
+                    name: responseJson.name,
+                    email: responseJson.email,
+                    token: responseJson.token
+                };
+    
+                // save to storage
+                await AsyncStorage.setItem('userData', JSON.stringify(userData));
+            }
+            
             this.props.navigation.navigate('LoadingScreen');
         })
         .catch((error) => {
