@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         width: '70%',
         borderRadius: 30,
-        marginTop: 20,
     },
     title: {
         textAlign: 'center',

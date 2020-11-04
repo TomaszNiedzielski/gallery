@@ -9,13 +9,14 @@ import { Colors } from '../../constans/Colors';
 export default class AuthInput extends React.Component {
 
     render() {
-        const { keyboardType, placeholder, onChangeText } = this.props;
+        const { keyboardType, placeholder, onChangeText, iconName } = this.props;
         return(
             <View style={styles.container}>
                 <View style={styles.iconWrapper}>
-                    {keyboardType === 'default' && <Icon name="user-alt" size={20} color={Colors.primary} />}
-                    {keyboardType === 'email-address' && <Ionicons name="mail" size={20} color={Colors.primary} />}
-                    {keyboardType === 'password' && <Icon name="lock" size={20} color={Colors.primary} />}
+                    {iconName === 'user' && <Icon name="user-alt" size={20} color={Colors.primary} />}
+                    {iconName === 'mail' && <Ionicons name="mail" size={20} color={Colors.primary} />}
+                    {iconName === 'lock' && <Icon name="lock" size={20} color={Colors.primary} />}
+                    {iconName === 'people' && <Ionicons name="people" size={20} color={Colors.primary} />}
                 </View>
                 <TextInput
                     style={styles.input}
@@ -32,7 +33,7 @@ export default class AuthInput extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        marginVertical: 15,
+        marginBottom: 20,
         height: 50
     },
     input: {

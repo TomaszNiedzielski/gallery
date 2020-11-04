@@ -38,11 +38,13 @@ export default class LoginScreen extends React.Component {
                                 keyboardType="email-address"
                                 placeholder="e-mail"
                                 onChangeText={text => this.setState({ email: text })}
+                                iconName="mail"
                             />
                             <AuthInput
                                 keyboardType="password"
                                 placeholder="password"
                                 onChangeText={text => this.setState({ password: text })}
+                                iconName="lock"
                             />
                             <FormSubmit
                                 onPress={this.sendLoginRequest}
@@ -119,7 +121,8 @@ const styles = StyleSheet.create({
     content: {
         alignItems: 'center',
         marginBottom: 15,
-        zIndex: 5
+        zIndex: 5,
+        marginTop: 50
     },
     userIcon: {
         marginTop: 20

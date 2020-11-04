@@ -39,20 +39,28 @@ export default class RegisterScreen extends React.Component {
                                 keyboardType="default"
                                 placeholder="name"
                                 onChangeText={text => this.setState({ name: text })}
+                                iconName="user"
                             />
                             <AuthInput
                                 keyboardType="email-address"
                                 placeholder="e-mail"
                                 onChangeText={text => this.setState({ email: text })}
+                                iconName="mail"
                             />
                             <AuthInput
                                 keyboardType="password"
                                 placeholder="password"
                                 onChangeText={text => this.setState({ password: text })}
+                                iconName="lock"
                             />
-                            <FormSubmit
-                                onPress={this.sendRegisterRequest}
+                            <Text style={styles.inputLabelText}>If your partner already has created an account ask him about code to connect yourself.</Text>
+                            <AuthInput
+                                keyboardType="default"
+                                placeholder="Code from your partner..."
+                                onChangeText={text => this.setState({ password: text })}
+                                iconName="people"
                             />
+                            <FormSubmit onPress={this.sendRegisterRequest} />
                         </View>
                     </ScrollView>
                     {!isKeyboardVisible && <AuthRedirectButton
@@ -141,5 +149,11 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 22,
         marginVertical: 15
+    },
+    inputLabelText: {
+        marginHorizontal: 30,
+        color: 'white',
+        fontSize: 11,
+        marginBottom: 4
     }
 });

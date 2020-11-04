@@ -20,6 +20,7 @@ class LoadingScreen extends React.Component {
     }
 
     isLoggedIn = async () => {
+        // AsyncStorage.clear();
         try {
             let userData = await AsyncStorage.getItem('userData');
             if(userData) {
