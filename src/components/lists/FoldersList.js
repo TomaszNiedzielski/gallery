@@ -38,7 +38,7 @@ const FoldersList = () => {
                     numColumns={2}
                     columnWrapperStyle={styles.row}
                 />
-            : <Text>No folders found.</Text>}
+            : <Text style={styles.emptyGalleryInfo}>Your gallery is empty.</Text>}
         </View>
 
     );
@@ -63,19 +63,21 @@ const styles = StyleSheet.create({
         width: (Dimensions.get('window').width/2),
         height: (Dimensions.get('window').width/2)+20,
         marginRight: 3,
-        // backgroundColor: 'white',
         alignItems: 'center',
         zIndex: 10
     },
     row: {
         justifyContent: "space-between",
-        
     },
     folderName: {
         textShadowColor: 'rgba(0, 0, 0, 1)',
         textShadowOffset: {width: -1, height: 1},
         textShadowRadius: 10,
         color: 'white',
+    },
+    emptyGalleryInfo: {
+        textAlign: 'center',
+        fontSize: 13
     }
 });
 
