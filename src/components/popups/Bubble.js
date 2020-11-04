@@ -1,9 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux'
 
 const Bubble = () => {
+    const folders = useSelector(state => state.folders);
     return(
-        <View style={styles.container}>
+        folders.length > 0 ? null
+        : <View style={[styles.container, ]}>
             <View style={styles.triangle} />
             <Text style={styles.text}>Click to add photos.</Text>
         </View>
