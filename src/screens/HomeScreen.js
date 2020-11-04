@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import FoldersList from '../components/lists/FoldersList';
 import DefaultHeaderBackground from '../components/headers/DefaultHeaderBackground';
 import SlidingPopupBar from '../components/popups/SlidingPopupBar';
+import Bubble from '../components/popups/Bubble';
 
 import { connect } from 'react-redux';
 import { setStateWithDataFromStorage } from '../redux/actions/folders';
@@ -22,13 +23,10 @@ class HomeScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                {<FoldersList />
-                //<AutoRotateImageModal />
-                //<SlidingPopupBar />
-                
-               // <Image source={HomeBackground} style={{ height: '100%', width: '100%', position: 'absolute', zIndex: 0 }} />
-            }
-                
+                <FoldersList />
+                <Bubble />
+                <SlidingPopupBar />
+                <Image source={HomeBackground} style={{ height: '100%', width: '100%', position: 'absolute', zIndex: 0 }} />
             </View>
         );
     }
@@ -128,6 +126,6 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     headerIcon: {
-        marginHorizontal: 10
+        marginRight: 25
     }
 });

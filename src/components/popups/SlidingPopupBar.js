@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableNativeFeedback } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../../constans/Colors';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
+export default class SlidingPopupBar extends React.Component {
 
-const SlidingPopupBar = () => {
-    const [isClosed, setIsClosed] = useState(false);
-    return(
-            <View style={[styles.container, isClosed ? {left: -208} : {left: 0}]}>
+    state = {
+        y: new Animated.Value(300)
+    }
+
+    render() {
+        console.log(this.state.y);
+        return(
+            <Animated.View style={[styles.container, {
+                transform: [{
+                    translateY: this.state.y
+                }]}
+            ]}>
                 <LinearGradient
                     colors={Colors.gradient}
                     style={styles.gradient}
@@ -17,72 +25,52 @@ const SlidingPopupBar = () => {
                     end={{x: 1, y: 0}}
                 >
                     <Text style={styles.text}>Connect with your partner.</Text>
-                    <View style={styles.border} />
-                    <TouchableNativeFeedback onPress={() => setIsClosed(!isClosed)}>
-                        <View style={styles.touchableWrapper}>
-                            <View style={styles.icon}>
-                                <Icon name={isClosed ? "arrow-right": "arrow-left"} size={22} color="white" />
-                            </View>
-                        </View>
-                    </TouchableNativeFeedback>
+                    <Text style={styles.instruction}>
+                        To connect this gallery with your partner, he/she need to download app on his/her phone
+                        and type this code during registration. Code: 432 543
+                    </Text>
                 </LinearGradient>
-            </View>
-            
-    );
+            </Animated.View>
+        );
+    }
+
+    componentDidMount() {
+        this.slide();
+    }
+
+    slide = () => {
+        Animated.spring(this.state.y, {
+            toValue: 0,
+            useNativeDriver: true, 
+        }).start();
+    };
+      
 }
 
 const styles = StyleSheet.create({
-    
     container: {
-        borderBottomRightRadius: 10,
-        borderWidth: 3,
         borderColor: Colors.primary,
-        width: 270,
-        height: 50,
+        width: '100%',
         position: 'absolute',
-        bottom: '50%',
+        bottom: 0,
         zIndex: 10,
-        flexDirection: 'row'
     },
     gradient: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        borderBottomRightRadius: 7,
-        flexDirection: 'row',
-        // width: '100%'
+        borderTopRightRadius: 50,
+        borderTopLeftRadius: 50,
+        padding: 20
     },
     text: {
-        fontSize: 16,
+        fontSize: 20,
+        color: 'white',
+        fontWeight: 'bold',
+        marginBottom: 10
+    },
+    instruction: {
         color: 'white',
         fontWeight: 'bold'
-    },
-    touchableWrapper: {
-        //height: 50,
-        width: 50,
-        //borderRadius: 25,
-        //position: 'absolute',
-        //right: -24,
-        //top: -27,
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 100,
-    },
-    icon: {
-        //backgroundColor: 'rgba(0, 0, 0, 0.2)',
-        //height: 33,
-        //width: 50,
-        borderRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    border: {
-        height: '100%',
-        width: 4,
-        backgroundColor: Colors.primary,
-        marginLeft: 10
     }
 });
-
-export default SlidingPopupBar;
