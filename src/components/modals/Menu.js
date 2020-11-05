@@ -20,17 +20,15 @@ export default class Menu extends React.Component {
             </TouchableWithoutFeedback>
             <View style={styles.container}>
                 {menuList.length > 0 ?
-                    menuList.map(menuItem => {
+                    menuList.map((menuItem, index) => {
                         return (
-                            <TouchableWithoutFeedback onPress={() => {menuItem.onPressHandler(); this.props.onRequestClose()}}>
+                            <TouchableWithoutFeedback key={index} onPress={() => {menuItem.onPressHandler(); this.props.onRequestClose()}}>
                                 <Text style={styles.menuItem}>{ menuItem.name }</Text>
                             </TouchableWithoutFeedback>
                         )
                     })
                 : null}
             </View>
-
-            
             </>
         );
     }
@@ -51,7 +49,6 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         backgroundColor: 'white',
         width: 200,
-        // height: 300,
         position: 'absolute',
         right: 10,
         top: 10,
