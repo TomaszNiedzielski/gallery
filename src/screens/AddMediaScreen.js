@@ -115,27 +115,11 @@ class AddMediaScreen extends React.Component {
         selectedMedia.forEach((mediaItem, index) => {
 
             let formData = new FormData();
-            let extension = mediaItem.path.split('.').pop();
-            let mediaDetails = {};
-            if (extension === 'png') {
-                mediaDetails = {
-                    name: "image.png",
-                    type: "image/png",
-                }
-            } else if(extension === 'jpg') {
-                mediaDetails = {
-                    name: "image.jpg",
-                    type: "image/jpeg",
-                }
-            } else if(extension === 'mp4') {
-                mediaDetails = {
-                    name: "video.mp4",
-                    type: "video/mp4"
-                }
-            }
+            let name = mediaItem.path.split('/').pop();
 
             formData.append("media", {
-                ...mediaDetails,
+                type: mediaItem.mime,
+                name: name,
                 uri: Platform.OS === "android" ? mediaItem.path : mediaItem.path.replace("file://", ""),
             });
             formData.append("api_token", this.props.user.token);
@@ -147,15 +131,15 @@ class AddMediaScreen extends React.Component {
                 method: 'POST',
                 body: formData
             })
-            .then((response) => response.text())
+            .then((response) => response.json())
             .then((responseJson) => {
                 // if media item is uploaded set status as uploaded
                 console.log("kod", responseJson);
-                this.afterUploadToApi(true);
+                this.afterUploadToApi(true, index);
             })
             .catch((e) => {
                 console.log(e);
-                this.afterUploadToApi(false);
+                this.afterUploadToApi(false, index);
             });
 
         });
@@ -164,7 +148,7 @@ class AddMediaScreen extends React.Component {
         this.dispatchSelectedMediaToRedux();
     }
 
-    afterUploadToApi = (isItemUploaded) => {
+    afterUploadToApi = (isItemUploaded, index) => {
         let updatedSelectedMedia = this.state.selectedMedia;
         updatedSelectedMedia[index].uploaded = isItemUploaded;
         this.setState({ selectedMedia: updatedSelectedMedia });
