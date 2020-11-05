@@ -94,7 +94,8 @@ export default class LoginScreen extends React.Component {
                 id: responseJson.user.id,
                 name: responseJson.user.name,
                 email: responseJson.user.email,
-                token: responseJson.token
+                token: responseJson.token,
+                partnerId: responseJson.user.partnerId,
             };
 
             // save to storage
