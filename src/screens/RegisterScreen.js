@@ -17,7 +17,8 @@ export default class RegisterScreen extends React.Component {
         isKeyboardVisible: false,
         name: null,
         email: null,
-        password: null
+        password: null,
+        relationshipCode: null
     }
 
     render() {
@@ -57,7 +58,7 @@ export default class RegisterScreen extends React.Component {
                             <AuthInput
                                 keyboardType="default"
                                 placeholder="Code from your partner..."
-                                onChangeText={text => this.setState({ password: text })}
+                                onChangeText={text => this.setState({ relationshipCode: text })}
                                 iconName="people"
                             />
                             <FormSubmit onPress={this.sendRegisterRequest} />
@@ -87,7 +88,7 @@ export default class RegisterScreen extends React.Component {
     }
 
     sendRegisterRequest = () => {
-        const { name, email, password } = this.state;
+        const { name, email, password, relationshipCode } = this.state;
 
         console.log('apiurl: ', ApiUrl+'register');
         fetch(ApiUrl+'register', {
@@ -100,7 +101,8 @@ export default class RegisterScreen extends React.Component {
                 name: name,
                 email: email,
                 password: password,
-                password_confirmation: password
+                password_confirmation: password,
+                relationshipCode: relationshipCode
             })
         })
         .then((response) => response.json())
@@ -108,12 +110,14 @@ export default class RegisterScreen extends React.Component {
             console.log('po rejestrcja: ', responseJson);
             if(responseJson.token) {
                 const userData = {
-                    id: responseJson.id,
-                    name: responseJson.name,
-                    email: responseJson.email,
-                    token: responseJson.token
+                    id: responseJson.user.id,
+                    name: responseJson.user.name,
+                    email: responseJson.user.email,
+                    token: responseJson.token,
+                    relationshipCode: responseJson.user.relationshipCode,
+                    partnerId: responseJson.user.partnerId
                 };
-    
+
                 // save to storage
                 await AsyncStorage.setItem('userData', JSON.stringify(userData));
             }

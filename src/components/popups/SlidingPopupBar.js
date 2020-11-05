@@ -1,21 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../../constans/Colors';
 
-export default class SlidingPopupBar extends React.Component {
+const SlidingPopupBar = () => {
 
-    state = {
-        y: new Animated.Value(300)
-    }
+    const user = useSelector(state => state.user)
+    const [Y, setY] = useState(new Animated.Value(300));
 
-    render() {
-        console.log(this.state.y);
+    useEffect(() => {
+        Animated.spring(Y, {
+            toValue: 0,
+            useNativeDriver: true, 
+        }).start();
+    });
+    console.log(user);
+    if(!user.partnerId) {
         return(
             <Animated.View style={[styles.container, {
                 transform: [{
-                    translateY: this.state.y
+                    translateY: Y
                 }]}
             ]}>
                 <LinearGradient
@@ -27,24 +33,14 @@ export default class SlidingPopupBar extends React.Component {
                     <Text style={styles.text}>Connect with your partner.</Text>
                     <Text style={styles.instruction}>
                         To connect this gallery with your partner, he/she need to download app on his/her phone
-                        and type this code during registration. Code: 432 543
+                        and type this code during registration. Code: {user.relationshipCode}
                     </Text>
                 </LinearGradient>
             </Animated.View>
         );
+    } else {
+        return null;
     }
-
-    componentDidMount() {
-        this.slide();
-    }
-
-    slide = () => {
-        Animated.spring(this.state.y, {
-            toValue: 0,
-            useNativeDriver: true, 
-        }).start();
-    };
-      
 }
 
 const styles = StyleSheet.create({
@@ -74,3 +70,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     }
 });
+
+export default SlidingPopupBar;
