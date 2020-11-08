@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback, Text, ShadowPropTypesIOS } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback, Text } from 'react-native';
+import PropTypes from 'prop-types';
 
 export default class Menu extends React.Component {
-
     constructor(props) {
         super(props);
-
         this.state = {
             menuList: props.menuList
         }
@@ -18,7 +17,7 @@ export default class Menu extends React.Component {
             <TouchableWithoutFeedback onPress={() => this.props.onRequestClose()}>
                 <View style={styles.wrapper}/>
             </TouchableWithoutFeedback>
-            <View style={styles.container}>
+            <View style={[styles.container, this.props.style]}>
                 {menuList.length > 0 ?
                     menuList.map((menuItem, index) => {
                         return (
@@ -43,6 +42,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         bottom: 0,
+        zIndex: 10
     },
     container: {
         borderWidth: 1,
@@ -52,9 +52,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 10,
         top: 10,
+        zIndex: 10
     },
     menuItem: {
         fontSize: 18,
         padding: 10
     }
 });
+
+Menu.propTypes = {
+    menuList: PropTypes.array,
+}

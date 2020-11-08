@@ -2,12 +2,14 @@ import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
-import Icon from 'react-native-vector-icons/Entypo';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import FoldersList from '../components/lists/FoldersList';
 import DefaultHeaderBackground from '../components/headers/DefaultHeaderBackground';
 import SlidingPopupBar from '../components/popups/SlidingPopupBar';
 import Bubble from '../components/popups/Bubble';
+import Menu from '../components/modals/Menu';
 
 import { connect } from 'react-redux';
 import { setStateWithDataFromStorage } from '../redux/actions/folders';
@@ -19,6 +21,9 @@ import HomeBackground from '../assets/HomeBackground.png';
 import { ApiUrl } from '../constans/ApiUrl';
 
 class HomeScreen extends React.Component {
+    state = {
+        isMenuVisible: false
+    }
 
     render() {
         return (
@@ -27,6 +32,13 @@ class HomeScreen extends React.Component {
                 <Bubble />
                 <SlidingPopupBar />
                 <Image source={HomeBackground} style={{ height: '100%', width: '100%', position: 'absolute', zIndex: 0 }} />
+                {this.state.isMenuVisible && <Menu
+                    style={{ left: 5, top: 5 }}
+                    onRequestClose={() => this.setState({ isMenuVisible: false }) }
+                    menuList={[ // to można też dać do reduxa
+                        {name: 'Logout', onPressHandler: () => { AsyncStorage.clear() ,this.props.navigation.navigate('LoadingScreen') }}
+                    ]}
+                />}
             </View>
         );
     }
@@ -37,15 +49,17 @@ class HomeScreen extends React.Component {
 
         this.props.navigation.setOptions({
             title: 'Galeria',
-            headerTitleStyle: {
-                color: iconColor
-            },
+            headerTitleStyle: { color: iconColor },
             headerTintColor: iconColor,
+            headerLeft: () => (
+                <Ionicons name="settings-sharp" size={iconSize} color={iconColor} style={{ marginLeft: 15 }} 
+                onPress={() => this.setState({ isMenuVisible: !this.state.isMenuVisible })} />
+            ),
             headerRight: () => (
                 <View style={styles.headerRight}>
-                    <Icon name="video" size={iconSize} color={iconColor} style={styles.headerIcon} 
+                    <Entypo name="video" size={iconSize} color={iconColor} style={styles.headerIcon} 
                         onPress={() => this.props.navigation.navigate('AddMediaScreen', {mediaType: 'video'})} />
-                    <Icon name="images" size={iconSize} color={iconColor} style={styles.headerIcon}
+                    <Entypo name="images" size={iconSize} color={iconColor} style={styles.headerIcon}
                         onPress={() => this.props.navigation.navigate('AddMediaScreen', {mediaType: 'image'})} />
                 </View>
             ),
