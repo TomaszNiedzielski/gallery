@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { Colors } from '../../constans/Colors';
 import { useSelector } from 'react-redux'
 
 const Bubble = () => {
@@ -17,31 +18,32 @@ const styles = StyleSheet.create({
     container: {
         // width: 140,
         position: 'absolute',
-        backgroundColor: 'white',
+        backgroundColor: Colors.primary,
         zIndex: 100,
-        top: 2,
+        top: 5,
         right: 2,
-        borderWidth: 2,
-        borderColor: '#ccc',
+        //borderWidth: 1,
+        //borderColor: '#ccc',
         borderRadius: 20,
-        padding: 10,
+        padding: 13,
     },
     triangle: {
-        backgroundColor: 'white',
+        backgroundColor: Colors.primary,
         height: 20,
         width: 20,
         transform: [{ rotate: '45deg' }],
         zIndex: 99,
-        borderTopWidth: 2,
-        borderLeftWidth: 2,
-        borderColor: '#ccc',
+        //borderTopWidth: 1,
+        //borderLeftWidth: 1,
+        //borderColor: '#ccc',
         position: 'absolute',
-        top: -11,
+        top: -9,
         right: 22
     },
     text: {
-        fontSize: 13,
-        fontWeight: 'bold'
+        fontSize: 11,
+        fontWeight: 'bold',
+        color: 'white'
     }
 });
 

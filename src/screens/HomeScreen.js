@@ -31,7 +31,7 @@ class HomeScreen extends React.Component {
                 <FoldersList />
                 <Bubble />
                 <SlidingPopupBar />
-                <Image source={HomeBackground} style={{ height: '100%', width: '100%', position: 'absolute', zIndex: 0 }} />
+                {/*<Image source={HomeBackground} style={{ height: '100%', width: '100%', position: 'absolute', zIndex: 0 }} />*/}
                 {this.state.isMenuVisible && <Menu
                     style={{ left: 5, top: 5 }}
                     onRequestClose={() => this.setState({ isMenuVisible: false }) }

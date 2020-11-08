@@ -38,7 +38,7 @@ const FoldersList = () => {
                     numColumns={2}
                     columnWrapperStyle={styles.row}
                 />
-            : <Text style={styles.emptyGalleryInfo}>Your gallery is empty.</Text>}
+            : null}
         </View>
 
     );
