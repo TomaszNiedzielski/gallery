@@ -22,10 +22,11 @@ const styles = StyleSheet.create({
         zIndex: 100,
         top: 5,
         right: 2,
-        //borderWidth: 1,
-        //borderColor: '#ccc',
+        // borderWidth: 2,
+        borderColor: Colors.primary,
         borderRadius: 20,
         padding: 13,
+        elevation: 30
     },
     triangle: {
         backgroundColor: Colors.primary,
@@ -33,12 +34,14 @@ const styles = StyleSheet.create({
         width: 20,
         transform: [{ rotate: '45deg' }],
         zIndex: 99,
-        //borderTopWidth: 1,
-        //borderLeftWidth: 1,
-        //borderColor: '#ccc',
+        // borderTopWidth: 2,
+        // borderLeftWidth: 2,
+        borderColor: Colors.primary,
         position: 'absolute',
-        top: -9,
-        right: 22
+        top: -10,
+        right: 22,
+        borderTopLeftRadius: 4
+        // elevation: 30
     },
     text: {
         fontSize: 11,

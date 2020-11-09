@@ -3,6 +3,7 @@ import { View, Image, StyleSheet, FlatList, Text, Dimensions, TouchableNativeFee
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
+import AppStamp from '../icons/AppStamp';
 
 const FolderIcon = ({ item, navigation }) => (
     <View style={styles.itemWrapper}>
@@ -38,7 +39,8 @@ const FoldersList = () => {
                     numColumns={2}
                     columnWrapperStyle={styles.row}
                 />
-            : null}
+            : <AppStamp />
+            }
         </View>
 
     );

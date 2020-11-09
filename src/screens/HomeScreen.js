@@ -49,10 +49,10 @@ class HomeScreen extends React.Component {
 
         this.props.navigation.setOptions({
             title: 'Galeria',
-            headerTitleStyle: { color: iconColor },
+            headerTitleStyle: [{color: iconColor}, styles.headerIcon],
             headerTintColor: iconColor,
             headerLeft: () => (
-                <Ionicons name="settings-sharp" size={iconSize} color={iconColor} style={{ marginLeft: 15 }} 
+                <Ionicons name="settings-sharp" size={iconSize} color={iconColor} style={[{ marginLeft: 15 }, styles.headerIcon]} 
                 onPress={() => this.setState({ isMenuVisible: !this.state.isMenuVisible })} />
             ),
             headerRight: () => (
@@ -132,7 +132,8 @@ export default connect(mapStateToProps, mapDispatchToprops())(HomeScreen);
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        // backgroundColor: 'white'
     },
     headerRight: {
         flex: 1,
@@ -140,6 +141,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     headerIcon: {
-        marginRight: 25
+        marginRight: 25,
+        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+        textShadowOffset: {width: -1, height: 1},
+        textShadowRadius: 10
     }
 });
