@@ -44,7 +44,6 @@ export default class MediaSlider extends React.Component {
                                 width: screenWidth,
                                 backgroundColor: 'black'
                             }}>
-                                <Button title="change direction" onPress={() => this.setState({ isScrollDirectionHorizontal: !this.state.isScrollDirectionHorizontal })} />
                                 {!item.duration
                                 ? <View style={styles.mediaItemContainer}>
                                     <FastImage
