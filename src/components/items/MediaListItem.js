@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableWithoutFeedback, StyleSheet, Dimensions, View } from 'react-native';
+import PropTypes from 'prop-types';
 
 import FastImage from 'react-native-fast-image';
 
@@ -11,8 +12,10 @@ import { addSelectedMediaToCollection, removeSelectedMediaFromCollection } from 
 class MediaListItem extends React.Component {
 
     render() {
-        const { item, index, onPressHandler, isRemovingEnabled } = this.props;
-        return(
+        const { item, index, onPressHandler, isRemovingEnabled, columnNumber } = this.props;
+        let numColumns = !columnNumber ? 3 : columnNumber;
+        console.log('numColumns: ', numColumns);
+        return (
             <TouchableWithoutFeedback onPress={() => onPressHandler(index)}>
                 <View style={styles.container}>
                     <CheckBox
@@ -22,7 +25,11 @@ class MediaListItem extends React.Component {
                     />
                     <FastImage
                         source={{ uri: item.path }}
-                        style={styles.mediaItem}
+                        style={{
+                            height: Dimensions.get('window').width/numColumns-6,
+                            width: Dimensions.get('window').width/numColumns-6,
+                            margin: 3
+                        }}
                     />
                 </View>
             </TouchableWithoutFeedback>
@@ -42,11 +49,17 @@ class MediaListItem extends React.Component {
 
 const styles = StyleSheet.create({
     mediaItem: {
-        height: Dimensions.get('window').width/3-6,
-        width: Dimensions.get('window').width/3-6,
-        margin: 3
+        
     }
 });
+
+MediaListItem.propTypes = {
+    item: PropTypes.object,
+    index: PropTypes.number,
+    onPressHandler: PropTypes.func,
+    isRemovingEnabled: PropTypes.bool,
+    columnNumber: PropTypes.number
+}
 
 const mapStateToProps = (state) => {
     return {
