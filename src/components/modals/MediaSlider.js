@@ -1,10 +1,7 @@
 import React from 'react';
 import { Modal, View, FlatList, StyleSheet, Dimensions, Button } from 'react-native';
 
-import FastImage from 'react-native-fast-image';
 import AutoRotateImageModal from './AutoRotateImageModal';
-import ScalableImage from '../images/ScalableImage';
-
 import VideoPlayer from './videoplayer/VideoPlayer';
 
 export default class MediaSlider extends React.Component {
@@ -46,15 +43,19 @@ export default class MediaSlider extends React.Component {
                             }}>
                                 {!item.duration
                                 ? <View style={styles.mediaItemContainer}>
-                                    <FastImage
+                                    <AutoRotateImageModal
                                         source={{ uri: item.path }}
                                         style={{
                                             width: isScreenPortrait ? screenWidth : item.width * (screenHeight / item.height),
                                             height: isScreenPortrait ? item.height * (screenWidth / item.width) : screenHeight
                                         }}
+                                        onRequestClose={this.props.onRequestClose}
                                     />
                                 </View>
-                                : <VideoPlayer uri={item.path} />}
+                                : <VideoPlayer
+                                    uri={item.path}
+                                    onRequestClose={this.props.onRequestClose}
+                                />}
                             </View>
                         )}
                     /> : null}
@@ -62,10 +63,6 @@ export default class MediaSlider extends React.Component {
             </Modal>
         );
     }
-/*<FastImage
-    source={{ uri: item.path }}
-    style={{ width: '100%', height: Dimensions.get('window').height-100 }}
-/>*/
 
     componentDidMount() {
         this.setState({ selectedMediaItemIndex: this.props.selectedMediaItemIndex });
@@ -110,7 +107,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'black'
     },
     mediaItemContainer: {
-        marginVertical: 20,
         alignItems: 'center',
         flex: 1,
         justifyContent: 'center'

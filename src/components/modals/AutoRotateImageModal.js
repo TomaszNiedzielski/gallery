@@ -1,27 +1,22 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
-import ScalableImage from '../images/ScalableImage';
+import FastImage from 'react-native-fast-image';
+import MediaViewerHeader from '../headers/MediaViewerHeader';
 
 export default class AutoRotateImageModal extends React.Component {
 
-    state = {
-        path: this.props.path,
-        originalImageWidth: this.props.width,
-        originalImageHeight: this.props.height,
-        screenWidth: Dimensions.get('window').width,
-    }
-
     render() {
-        const { path, screenWidth, originalImageWidth, originalImageHeight } = this.state;
+        const { source, style } = this.props;
 
         return(
             <View style={styles.container}>
-                <ScalableImage
-                    source={{ uri: path }}
-                    width={screenWidth}
-                    originalWidth={originalImageHeight}
-                    originalHeight={originalImageWidth}
+                <MediaViewerHeader
+                    onRequestClose={this.props.onRequestClose}
+                />
+                <FastImage
+                    source={source}
+                    style={style}
                 />
             </View>
         );
