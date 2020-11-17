@@ -36,7 +36,8 @@ class HomeScreen extends React.Component {
                     style={{ left: 5, top: 5 }}
                     onRequestClose={() => this.setState({ isMenuVisible: false }) }
                     menuList={[ // to można też dać do reduxa
-                        {name: 'Logout', onPressHandler: () => { AsyncStorage.clear() ,this.props.navigation.navigate('LoadingScreen') }}
+                        { name: 'Access Code', onPressHandler: () => this.props.navigation.navigate('EditAccessCodeScreen', { isAccessCodeCreating: true })},
+                        { name: 'Logout', onPressHandler: () => {AsyncStorage.clear(), this.props.navigation.navigate('LoadingScreen')} }
                     ]}
                 />}
             </View>
