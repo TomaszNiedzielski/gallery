@@ -46,9 +46,10 @@ const styles = StyleSheet.create({
     },
     container: {
         borderWidth: 1,
-        borderColor: '#ccc',
+        borderColor: '#e6e6e6',
+        borderRadius: 3,
         backgroundColor: 'white',
-        width: 200,
+        width: 230,
         position: 'absolute',
         right: 10,
         top: 10,
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     },
     menuItem: {
         fontSize: 18,
-        padding: 10
+        padding: 15
     }
 });
 
