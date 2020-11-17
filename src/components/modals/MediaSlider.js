@@ -13,11 +13,11 @@ export default class MediaSlider extends React.Component {
         mounted: true,
         isScreenPortrait: true,
         selectedMediaItemIndex: null,
-        isScrollDirectionHorizontal: true
+        isScrollDirectionHorizontal: true,
     }
 
     render() {
-        const { media, screenWidth, screenHeight, mounted, isScreenPortrait, selectedMediaItemIndex, isScrollDirectionHorizontal } = this.state;
+        const { media, screenWidth, screenHeight, mounted, isScreenPortrait, selectedMediaItemIndex, isScrollDirectionHorizontal,  } = this.state;
         console.log('media h: ', media);
         console.log('indeksy: ', selectedMediaItemIndex);
         console.log('screen wfidth: ', screenWidth);

@@ -1,26 +1,45 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 
 import FastImage from 'react-native-fast-image';
 import MediaViewerHeader from '../headers/MediaViewerHeader';
 
 export default class AutoRotateImageModal extends React.Component {
+    state = {
+        isMediaHeaderVisible: false
+    }
 
     render() {
         const { source, style } = this.props;
-
+        const { isMediaHeaderVisible } = this.state;
         return(
             <View style={styles.container}>
-                <MediaViewerHeader
+                {isMediaHeaderVisible && <MediaViewerHeader
                     onRequestClose={this.props.onRequestClose}
-                />
-                <FastImage
-                    source={source}
-                    style={style}
-                />
+                />}
+                <TouchableWithoutFeedback onPress={() => this.toggleMediaHeader()}>
+                    <FastImage
+                        source={source}
+                        style={style}
+                    />
+                </TouchableWithoutFeedback>
             </View>
         );
     }
+    
+    toggleMediaHeader = () => {
+        clearTimeout(this.timer);
+        const { isMediaHeaderVisible } = this.state;
+        this.setState({ isMediaHeaderVisible: !isMediaHeaderVisible });
+        if(!isMediaHeaderVisible) {
+            this.timer = setTimeout(() => {this.setState({ isMediaHeaderVisible: isMediaHeaderVisible })}, 5000)
+        }
+    }
+    
+    componentWillUnmount() {
+        clearTimeout(this.timer);
+    }
+    
 }
 
 const styles = StyleSheet.create({
