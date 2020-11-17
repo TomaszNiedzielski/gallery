@@ -18,20 +18,22 @@ import { ApiUrl } from '../constans/ApiUrl';
 
 class HomeScreen extends React.Component {
     state = {
-        isMenuVisible: false
+        isMenuVisible: false,
+        isAccessCodeActivated: null
     }
 
     render() {
+        const { isMenuVisible, isAccessCodeActivated } = this.state;
         return (
             <View style={styles.container}>
                 <FoldersList />
                 <Bubble />
                 <SlidingPopupBar />
-                {this.state.isMenuVisible && <Menu
+                {isMenuVisible && isAccessCodeActivated !== null && <Menu
                     style={{ left: 10, top: 10 }}
                     onRequestClose={() => this.setState({ isMenuVisible: false }) }
                     menuList={[ // to można też dać do reduxa
-                        { name: 'Access Code', onPressHandler: () => this.props.navigation.navigate('EditAccessCodeScreen', { isAccessCodeCreating: true })},
+                        { name: 'Access Code', switch: true, switchValue: isAccessCodeActivated, onPressHandler: () => this.props.navigation.navigate('EditAccessCodeScreen')},
                         { name: 'Logout', onPressHandler: () => {AsyncStorage.clear(), this.props.navigation.navigate('LoadingScreen')} }
                     ]}
                 />}
@@ -39,7 +41,7 @@ class HomeScreen extends React.Component {
         );
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const iconSize = 24;
         const iconColor = 'white';
 
@@ -67,8 +69,15 @@ class HomeScreen extends React.Component {
         });
 
         this.restoreData();
-        //AsyncStorage.clear();
-        //this.props.navigation.navigate('LoadingScreen');
+        
+        // Restore access code
+        const accessCode = await AsyncStorage.getItem('accessCode');
+        console.log('access code: ', accessCode);
+        if(accessCode) {
+            this.setState({ isAccessCodeActivated: true });
+        } else {
+            this.setState({ isAccessCodeActivated: false });
+        }
     }
 
     componentWillUnmount = () => this.unsubscribe();
