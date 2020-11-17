@@ -14,10 +14,6 @@ import Menu from '../components/modals/Menu';
 import { connect } from 'react-redux';
 import { setStateWithDataFromStorage } from '../redux/actions/folders';
 
-// test
-import AutoRotateImageModal from '../components/modals/AutoRotateImageModal';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import HomeBackground from '../assets/HomeBackground.png';
 import { ApiUrl } from '../constans/ApiUrl';
 
 class HomeScreen extends React.Component {
@@ -31,9 +27,8 @@ class HomeScreen extends React.Component {
                 <FoldersList />
                 <Bubble />
                 <SlidingPopupBar />
-                {/*<Image source={HomeBackground} style={{ height: '100%', width: '100%', position: 'absolute', zIndex: 0 }} />*/}
                 {this.state.isMenuVisible && <Menu
-                    style={{ left: 5, top: 5 }}
+                    style={{ left: 10, top: 10 }}
                     onRequestClose={() => this.setState({ isMenuVisible: false }) }
                     menuList={[ // to można też dać do reduxa
                         { name: 'Access Code', onPressHandler: () => this.props.navigation.navigate('EditAccessCodeScreen', { isAccessCodeCreating: true })},
