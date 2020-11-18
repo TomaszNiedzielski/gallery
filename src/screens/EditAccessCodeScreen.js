@@ -5,7 +5,10 @@ import { Header, Keyboard,  CodeInput, IncorrectCode } from './AccessCodeScreen'
 import BlurredBackground from '../assets/BlurredBackground.png';
 import AsyncStorage from '@react-native-community/async-storage';
 
-export default class EditAccessCodeScreen extends React.Component {
+import { connect } from 'react-redux';
+import { createAccessCode } from '../redux/actions/accessCode';
+
+class EditAccessCodeScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -45,6 +48,10 @@ export default class EditAccessCodeScreen extends React.Component {
         });
     }
 
+    componentDidUpdate() {
+        console.log("new code from redux: ", this.props.accessCode);
+    }
+
     onKeyPressHandler = key => {
         const { code, confirmedCode, isConfirmationNow } = this.state;
         let updatedCode;
@@ -55,7 +62,7 @@ export default class EditAccessCodeScreen extends React.Component {
                 if(code === updatedCode) {
                     // Save new access code.
                     console.log('the same codes', code, '  ', updatedCode);
-                    AsyncStorage.setItem('accessCode', code);
+                    this.props.createAccessCode(code);
                     this.props.navigation.goBack();
                 } else {
                     // Incorrect confirmation
@@ -80,3 +87,16 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 });
+
+const mapStateToProps = (state) => {
+    console.log('teraz wegoz: ', state);
+    return {
+        accessCode: state.accessCode
+    }
+}
+
+const mapDispatchToprops = () => {
+    return { createAccessCode }
+}
+
+export default connect(mapStateToProps, mapDispatchToprops())(EditAccessCodeScreen);
