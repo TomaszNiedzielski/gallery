@@ -13,28 +13,37 @@ import Menu from '../components/modals/Menu';
 
 import { connect } from 'react-redux';
 import { setStateWithDataFromStorage } from '../redux/actions/folders';
+import { removeAccessCode } from '../redux/actions/accessCode';
 
 import { ApiUrl } from '../constans/ApiUrl';
 
 class HomeScreen extends React.Component {
     state = {
         isMenuVisible: false,
-        isAccessCodeActivated: null
     }
 
     render() {
-        const { isMenuVisible, isAccessCodeActivated } = this.state;
+        const { isMenuVisible } = this.state;
+        const { accessCode } = this.props;
+        console.log('home render access code: ', accessCode);
         return (
             <View style={styles.container}>
                 <FoldersList />
                 <Bubble />
                 <SlidingPopupBar />
-                {isMenuVisible && isAccessCodeActivated !== null && <Menu
+                {isMenuVisible && <Menu
                     style={{ left: 10, top: 10 }}
                     onRequestClose={() => this.setState({ isMenuVisible: false }) }
-                    menuList={[ // to można też dać do reduxa
-                        { name: 'Access Code', switch: true, switchValue: isAccessCodeActivated, onPressHandler: () => this.props.navigation.navigate('EditAccessCodeScreen')},
-                        { name: 'Logout', onPressHandler: () => {AsyncStorage.clear(), this.props.navigation.navigate('LoadingScreen')} }
+                    menuList={[
+                    {
+                        name: 'Access Code',
+                        switch: true,
+                        switchValue: accessCode ? true : false,
+                        switchToggledToTrue: () => this.props.navigation.navigate('EditAccessCodeScreen'),
+                        switchToggledToFalse: () => this.props.removeAccessCode(),
+                        onPressHandler: () => this.props.navigation.navigate('EditAccessCodeScreen'),
+                    },
+                    { name: 'Logout', onPressHandler: () => {AsyncStorage.clear(), this.props.navigation.navigate('LoadingScreen')} }
                     ]}
                 />}
             </View>
@@ -69,15 +78,6 @@ class HomeScreen extends React.Component {
         });
 
         this.restoreData();
-        
-        // Restore access code
-        const accessCode = await AsyncStorage.getItem('accessCode');
-        console.log('access code: ', accessCode);
-        if(accessCode) {
-            this.setState({ isAccessCodeActivated: true });
-        } else {
-            this.setState({ isAccessCodeActivated: false });
-        }
     }
 
     componentWillUnmount = () => this.unsubscribe();
@@ -125,12 +125,13 @@ class HomeScreen extends React.Component {
 const mapStateToProps = (state) => {
     return {
         folders: state.folders,
-        user: state.user
+        user: state.user,
+        accessCode: state.accessCode
     }
 }
 
 const mapDispatchToprops = () => {
-    return { setStateWithDataFromStorage }
+    return { setStateWithDataFromStorage, removeAccessCode }
 }
 
 export default connect(mapStateToProps, mapDispatchToprops())(HomeScreen);

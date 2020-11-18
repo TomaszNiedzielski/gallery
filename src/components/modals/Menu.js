@@ -3,15 +3,8 @@ import { View, StyleSheet, TouchableWithoutFeedback, Text, Switch } from 'react-
 import PropTypes from 'prop-types';
 
 export default class Menu extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            menuList: props.menuList
-        }
-    }
-
     render() {
-        const { menuList } = this.state;
+        const { menuList } = this.props;
         return (
             <>
                 <TouchableWithoutFeedback onPress={() => this.props.onRequestClose()}>
@@ -28,7 +21,13 @@ export default class Menu extends React.Component {
                                             // trackColor={{ false: "#767577", true: "#81b0ff" }}
                                             // thumbColor={menuItem.switchValue ? "#f5dd4b" : "#f4f3f4"}
                                             ios_backgroundColor="#3e3e3e"
-                                            onValueChange={() => {menuItem.onPressHandler(); this.props.onRequestClose()}}
+                                            onValueChange={(value) => {
+                                                if(value) {
+                                                    menuItem.switchToggledToTrue();
+                                                } else {
+                                                    menuItem.switchToggledToFalse();
+                                                }
+                                            }}
                                             value={menuItem.switchValue}
                                         />}
                                     </View>
@@ -40,7 +39,6 @@ export default class Menu extends React.Component {
             </>
         );
     }
-
 }
 
 const styles = StyleSheet.create({
@@ -75,5 +73,5 @@ const styles = StyleSheet.create({
 });
 
 Menu.propTypes = {
-    menuList: PropTypes.array,
+    menuList: PropTypes.array
 }
