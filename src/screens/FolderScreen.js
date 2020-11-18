@@ -25,23 +25,28 @@ class FolderScreen extends React.Component {
             folderName: props.route.params.folderName,
             isMenuOpen: false,
             isChangeFolderNameManagerOpen: false,
-            isRemovingEnabled: false
+            isRemovingEnabled: false,
+            columnNumber: 3
         }
     }
 
     render() {
-        const { folderName, isMenuOpen, isChangeFolderNameManagerOpen, isRemovingEnabled } = this.state;
+        const { folderName, isMenuOpen, isChangeFolderNameManagerOpen, isRemovingEnabled, columnNumber } = this.state;
         return (
             <View style={styles.container}>
                 <MediaList
                     folderName={folderName}
                     isRemovingEnabled={isRemovingEnabled}
                     navigation={this.props.navigation}
+                    columnNumber={columnNumber}
                 />
                 {isMenuOpen &&
                     <Menu
                         onRequestClose={() => this.setState({ isMenuOpen: false })}
                         menuList={[{
+                                name: 'One column layout',
+                                onPressHandler: this.toggleMediaLayout
+                            }, {
                                 name: 'Change folder name',
                                 onPressHandler: this.openChangeFolderNameManager
                             }, {
@@ -68,9 +73,7 @@ class FolderScreen extends React.Component {
         const iconColor = 'white';
         this.props.navigation.setOptions({
             title: this.state.folderName,
-            headerTitleStyle: {
-                color: iconColor
-            },
+            headerTitleStyle: { color: iconColor },
             headerTintColor: iconColor,
             headerBackground: () => <DefaultHeaderBackground />,
             headerRight: () => (
@@ -168,6 +171,11 @@ class FolderScreen extends React.Component {
             this.props.removeSelectedMediaFromCollection(); // if something has been selected
             return () => null;
         }
+    }
+
+    toggleMediaLayout = () => {
+        this.setState({ columnNumber: this.state.columnNumber === 3 ? 1 : 3 });
+        console.log('toggle');
     }
 
 }

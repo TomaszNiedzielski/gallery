@@ -1,31 +1,45 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 
-import ScalableImage from '../images/ScalableImage';
+import FastImage from 'react-native-fast-image';
+import MediaViewerHeader from '../headers/MediaViewerHeader';
 
 export default class AutoRotateImageModal extends React.Component {
-
     state = {
-        path: this.props.path,
-        originalImageWidth: this.props.width,
-        originalImageHeight: this.props.height,
-        screenWidth: Dimensions.get('window').width,
+        isMediaHeaderVisible: false
     }
 
     render() {
-        const { path, screenWidth, originalImageWidth, originalImageHeight } = this.state;
-
+        const { source, style } = this.props;
+        const { isMediaHeaderVisible } = this.state;
         return(
             <View style={styles.container}>
-                <ScalableImage
-                    source={{ uri: path }}
-                    width={screenWidth}
-                    originalWidth={originalImageHeight}
-                    originalHeight={originalImageWidth}
-                />
+                {isMediaHeaderVisible && <MediaViewerHeader
+                    onRequestClose={this.props.onRequestClose}
+                />}
+                <TouchableWithoutFeedback onPress={() => this.toggleMediaHeader()}>
+                    <FastImage
+                        source={source}
+                        style={style}
+                    />
+                </TouchableWithoutFeedback>
             </View>
         );
     }
+    
+    toggleMediaHeader = () => {
+        clearTimeout(this.timer);
+        const { isMediaHeaderVisible } = this.state;
+        this.setState({ isMediaHeaderVisible: !isMediaHeaderVisible });
+        if(!isMediaHeaderVisible) {
+            this.timer = setTimeout(() => {this.setState({ isMediaHeaderVisible: isMediaHeaderVisible })}, 5000)
+        }
+    }
+    
+    componentWillUnmount() {
+        clearTimeout(this.timer);
+    }
+    
 }
 
 const styles = StyleSheet.create({

@@ -5,8 +5,8 @@ import { Colors } from '../../constans/Colors';
 const AppStamp = () => {
     return(
         <View style={styles.container}>
-                <Text style={[styles.header, styles.shadowStyle]}>Fuzja</Text>
-                <Text style={[styles.text, styles.shadowStyle]}>Gallery app for couples.</Text>
+            <Text style={[styles.header, styles.shadowStyle]}>Fuzja</Text>
+            <Text style={[styles.text, styles.shadowStyle]}>Gallery app for couples.</Text>
         </View>
     );
 }
@@ -24,18 +24,17 @@ const styles = StyleSheet.create({
     },
     header: {
         fontSize: 40,
-        fontWeight: 'bold',
-        marginTop: 150
+        marginTop: 150,
+        fontFamily: 'Chewy-Regular'
     },
     text: {
         fontSize: 16,
     },
     shadowStyle: {
         color: Colors.primary,
-       // textShadowColor: 'rgba(0, 0, 0, 0.5)',
-       // textShadowOffset: {width: -1, height: 1},
-        //textShadowRadius: 10,
-        fontFamily: 'sans-serif'
+        textShadowColor: 'rgba(0, 0, 0, 0.5)',
+        textShadowOffset: {width: -1, height: 1},
+        textShadowRadius: 10,
     },
     box: {
         backgroundColor: Colors.primary

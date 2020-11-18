@@ -9,7 +9,7 @@ export default class VideoPlayer extends React.Component {
 
     state = {
         isControlsVisible: true,
-        paused: true,
+        paused: false,
         duration: null,
         videoPlayerHeight: null,
         videoPlayerWidth: null,

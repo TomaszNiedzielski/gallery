@@ -6,14 +6,16 @@ import FastImage from 'react-native-fast-image';
 import AppStamp from '../icons/AppStamp';
 
 const FolderIcon = ({ item, navigation }) => (
-    <View style={styles.itemWrapper}>
+    <View style={{ width: (Dimensions.get('window').width/2) }}>
         <TouchableNativeFeedback onPress={() => navigation.navigate('FolderScreen', { 'folderName': item.name })}>
-            <View>
+            <View style={styles.itemWrapper}>
                 <FastImage
                     style={styles.itemImage}
                     source={{ uri: item.media[0].path }}
                 />
-                <Text style={styles.folderName}>{item.name} ({item.media.length})</Text>
+                <View style={styles.folderNameWrapper}>
+                    <Text style={styles.folderName}>{item.name} ({item.media.length})</Text>
+                </View>
             </View>
         </TouchableNativeFeedback>
     </View>
@@ -25,7 +27,6 @@ const FoldersList = () => {
     console.log('state.folders: ', folders);
     return(
         <View style={styles.container}>
-            <View style={{ width: '100%', height: 10 }}/>
             {folders && folders.length > 0 ?
                 <FlatList
                     data={folders}
@@ -54,28 +55,38 @@ const styles = StyleSheet.create({
         flex: 1,
         zIndex: 10
     },
-    itemImage: {
-        width: (Dimensions.get('window').width/2)-20,
-        height: (Dimensions.get('window').width/2)-20,
-        borderColor: '#f2f2f2',
-        borderWidth: 1,
-        borderRadius: 5
-    },
     itemWrapper: {
         width: (Dimensions.get('window').width/2),
-        height: (Dimensions.get('window').width/2)+20,
-        marginRight: 3,
+        height: (Dimensions.get('window').width/2),
         alignItems: 'center',
-        zIndex: 10
+        justifyContent: 'center',
+        zIndex: 10,
+    },
+    itemImage: {
+        width: (Dimensions.get('window').width/2-2),
+        height: (Dimensions.get('window').width/2-2),
+        borderRadius: 5,
     },
     row: {
         justifyContent: "space-between",
+    },
+    folderNameWrapper: {
+        width: (Dimensions.get('window').width/2-2),
+        
+        // justifyContent: 'center'
     },
     folderName: {
         textShadowColor: 'rgba(0, 0, 0, 1)',
         textShadowOffset: {width: -1, height: 1},
         textShadowRadius: 10,
         color: 'white',
+        position: 'absolute',
+        padding: 7,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        width: '100%',
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5
     },
     emptyGalleryInfo: {
         textAlign: 'center',

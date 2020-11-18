@@ -30,7 +30,7 @@ class AddMediaScreen extends React.Component {
         return(
             <View style={styles.container}>
                 {selectedMedia.length > 0 && <>
-                    <MediaList media={selectedMedia} />
+                    <MediaList media={selectedMedia} columnNumber={3} />
                     <ChooseFolderManager
                         selectedMedia={selectedMedia}
                         navigation={this.props.navigation}

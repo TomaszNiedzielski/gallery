@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import { connect } from 'react-redux';
 import { addUserDataToStorage } from '../redux/actions/user';
+import { restoreAccessCode } from '../redux/actions/accessCode';
 
 class LoadingScreen extends React.Component {
 
@@ -17,6 +18,9 @@ class LoadingScreen extends React.Component {
 
     componentDidMount() {
         this.isLoggedIn();
+        this.props.navigation.setOptions({
+            headerShown: false
+        });
     }
 
     isLoggedIn = async () => {
@@ -26,13 +30,23 @@ class LoadingScreen extends React.Component {
             if(userData) {
                 userData = JSON.parse(userData);
                 this.props.addUserDataToStorage(userData);
-                this.props.navigation.replace('HomeScreen');
+                this.isAccessCodeSet();
             } else {
                 this.props.navigation.replace('LoginScreen');
             }
         } catch(e) {
             console.log(e);
             alert('error');
+        }
+    }
+
+    isAccessCodeSet = async () => {
+        this.props.restoreAccessCode();
+        let accessCode = await AsyncStorage.getItem('accessCode');
+        if(accessCode) {
+            this.props.navigation.replace('AccessCodeScreen', {accessCode: accessCode});
+        } else {
+            this.props.navigation.replace('HomeScreen');
         }
     }
 
@@ -54,7 +68,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = () => {
     return {
-        addUserDataToStorage
+        addUserDataToStorage, restoreAccessCode
     }
 }
 

@@ -13,37 +13,44 @@ import Menu from '../components/modals/Menu';
 
 import { connect } from 'react-redux';
 import { setStateWithDataFromStorage } from '../redux/actions/folders';
+import { removeAccessCode } from '../redux/actions/accessCode';
 
-// test
-import AutoRotateImageModal from '../components/modals/AutoRotateImageModal';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import HomeBackground from '../assets/HomeBackground.png';
 import { ApiUrl } from '../constans/ApiUrl';
 
 class HomeScreen extends React.Component {
     state = {
-        isMenuVisible: false
+        isMenuVisible: false,
     }
 
     render() {
+        const { isMenuVisible } = this.state;
+        const { accessCode } = this.props;
+        console.log('home render access code: ', accessCode);
         return (
             <View style={styles.container}>
                 <FoldersList />
                 <Bubble />
                 <SlidingPopupBar />
-                {/*<Image source={HomeBackground} style={{ height: '100%', width: '100%', position: 'absolute', zIndex: 0 }} />*/}
-                {this.state.isMenuVisible && <Menu
-                    style={{ left: 5, top: 5 }}
+                {isMenuVisible && <Menu
+                    style={{ left: 10, top: 10 }}
                     onRequestClose={() => this.setState({ isMenuVisible: false }) }
-                    menuList={[ // to można też dać do reduxa
-                        {name: 'Logout', onPressHandler: () => { AsyncStorage.clear() ,this.props.navigation.navigate('LoadingScreen') }}
+                    menuList={[
+                    {
+                        name: 'Access Code',
+                        switch: true,
+                        switchValue: accessCode ? true : false,
+                        switchToggledToTrue: () => this.props.navigation.navigate('EditAccessCodeScreen'),
+                        switchToggledToFalse: () => this.props.removeAccessCode(),
+                        onPressHandler: () => this.props.navigation.navigate('EditAccessCodeScreen'),
+                    },
+                    { name: 'Logout', onPressHandler: () => {AsyncStorage.clear(), this.props.navigation.navigate('LoadingScreen')} }
                     ]}
                 />}
             </View>
         );
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const iconSize = 24;
         const iconColor = 'white';
 
@@ -71,8 +78,6 @@ class HomeScreen extends React.Component {
         });
 
         this.restoreData();
-        //AsyncStorage.clear();
-        //this.props.navigation.navigate('LoadingScreen');
     }
 
     componentWillUnmount = () => this.unsubscribe();
@@ -120,12 +125,13 @@ class HomeScreen extends React.Component {
 const mapStateToProps = (state) => {
     return {
         folders: state.folders,
-        user: state.user
+        user: state.user,
+        accessCode: state.accessCode
     }
 }
 
 const mapDispatchToprops = () => {
-    return { setStateWithDataFromStorage }
+    return { setStateWithDataFromStorage, removeAccessCode }
 }
 
 export default connect(mapStateToProps, mapDispatchToprops())(HomeScreen);

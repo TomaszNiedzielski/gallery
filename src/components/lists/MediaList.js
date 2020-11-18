@@ -6,28 +6,34 @@ import MediaListItem from '../items/MediaListItem';
 import MediaSlider from '../modals/MediaSlider';
 
 class MediaList extends React.Component {
-
-    state = {
-        media: this.props.media,
-        selectedMediaItemIndex: null
+    constructor(props) {
+        super(props);
+        this.state = {
+            media: props.media,
+            selectedMediaItemIndex: null,
+            columnNumber: props.columnNumber
+        }
     }
 
     render() {
-        const { media, selectedMediaItemIndex } = this.state;
+        const { media, selectedMediaItemIndex, columnNumber } = this.state;
+        console.log('column number: ', columnNumber);
         return(
             <View style={styles.container}>
                 {media.length > 0 && <FlatList
                     data={media}
                     keyExtractor={item => item.path}
+                    key={columnNumber}
                     renderItem={({ item, index }) => (
                         <MediaListItem
                             item={item}
                             index={index}
                             onPressHandler={this.openMediaItem}
                             isRemovingEnabled={this.props.isRemovingEnabled}
+                            columnNumber={columnNumber}
                         />
                     )}
-                    numColumns={3}
+                    numColumns={columnNumber}
                 />}
                 {selectedMediaItemIndex !== null ?
                     <MediaSlider
@@ -59,6 +65,9 @@ class MediaList extends React.Component {
         }
         if(this.state.media && this.props.media && this.state.media.length !== this.props.media.length) {
             this.setState({ media: this.props.media });
+        }
+        if(this.state.columnNumber !== this.props.columnNumber) {
+            this.setState({ columnNumber: this.props.columnNumber });
         }
     }
 
