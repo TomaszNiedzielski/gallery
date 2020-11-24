@@ -3,11 +3,12 @@ import { TouchableWithoutFeedback, StyleSheet, Dimensions, View } from 'react-na
 import PropTypes from 'prop-types';
 
 import FastImage from 'react-native-fast-image';
-
 import CheckBox from '../checkboxes/CheckBox';
 
 import { connect } from 'react-redux';
 import { addSelectedMediaToCollection, removeSelectedMediaFromCollection } from '../../redux/actions/selectedMedia';
+
+import VideoStamp from '../../components/icons/VideoStamp';
 
 class MediaListItem extends React.Component {
     render() {
@@ -22,6 +23,7 @@ class MediaListItem extends React.Component {
                     width: Dimensions.get('window').width/numColumns,
                     padding: 1
                 }]}>
+                    {item.type === 'video' && <VideoStamp />}
                     <CheckBox
                         value={false}
                         visible={isRemovingEnabled}
