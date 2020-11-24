@@ -42,3 +42,6 @@
 [1116/231844.118:ERROR:directory_reader_win.cc(43)] FindFirstFile: System nie mo¿e odnaleŸæ okreœlonej œcie¿ki. (0x3)
 [1117/112914.014:ERROR:directory_reader_win.cc(43)] FindFirstFile: System nie mo¿e odnaleŸæ okreœlonej œcie¿ki. (0x3)
 [1117/181550.845:ERROR:directory_reader_win.cc(43)] FindFirstFile: System nie mo¿e odnaleŸæ okreœlonej œcie¿ki. (0x3)
+[1119/221142.919:ERROR:directory_reader_win.cc(43)] FindFirstFile: System nie mo¿e odnaleŸæ okreœlonej œcie¿ki. (0x3)
+[1123/160301.140:ERROR:directory_reader_win.cc(43)] FindFirstFile: System nie mo¿e odnaleŸæ okreœlonej œcie¿ki. (0x3)
+[1124/100117.274:ERROR:directory_reader_win.cc(43)] FindFirstFile: System nie mo¿e odnaleŸæ okreœlonej œcie¿ki. (0x3)
