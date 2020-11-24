@@ -48,7 +48,7 @@ class MediaSlider extends React.Component {
                                 width: screenWidth,
                                 backgroundColor: 'black'
                             }}>
-                                {!item.duration
+                                {item.type === 'image'
                                 ? <View style={styles.mediaItemContainer}>
                                     <AutoRotateImageModal
                                         source={{ uri: item.path }}
