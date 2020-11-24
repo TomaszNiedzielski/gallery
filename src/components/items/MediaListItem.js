@@ -14,8 +14,7 @@ class MediaListItem extends React.Component {
     render() {
         const { item, index, onPressHandler, isRemovingEnabled, numberOfColumns } = this.props;
         let numColumns = !numberOfColumns ? 3 : numberOfColumns;
-        console.log('numColumns: ', numColumns);
-        console.log(item);
+
         return (
             <TouchableWithoutFeedback onPress={() => onPressHandler(index)}>
                 <View style={[styles.container, {
@@ -43,14 +42,13 @@ class MediaListItem extends React.Component {
     }
 
     onCheckBoxValueChange = value => {
-        console.log(value);
+        const { path } = this.props.item;
         if(value === true) {
-            this.props.addSelectedMediaToCollection(this.props.item.path);
+            this.props.addSelectedMediaToCollection(path);
         } else {
-            this.props.removeSelectedMediaFromCollection(this.props.item.path);
+            this.props.removeSelectedMediaFromCollection(path);
         }
     }
-
 }
 
 const styles = StyleSheet.create({
@@ -68,7 +66,7 @@ MediaListItem.propTypes = {
     numberOfColumns: PropTypes.number
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         selectedMedia: state.selectedMedia
     }
