@@ -1,10 +1,14 @@
 import React from 'react';
-import { Modal, View, FlatList, StyleSheet, Dimensions, Button } from 'react-native';
+import { Modal, View, FlatList, StyleSheet, Dimensions } from 'react-native';
 
 import AutoRotateImageModal from './AutoRotateImageModal';
 import VideoPlayer from './videoplayer/VideoPlayer';
+import MediaViewerHeader from '../headers/MediaViewerHeader';
 
-export default class MediaSlider extends React.Component {
+import { connect } from 'react-redux';
+import { rememberCurrentlyViewedMediaItem } from '../../redux/actions/mediaSlider';
+
+class MediaSlider extends React.Component {
 
     state = {
         media: this.props.media,
@@ -24,7 +28,11 @@ export default class MediaSlider extends React.Component {
         return(
             <Modal onRequestClose={() => this.props.onRequestClose()}>
                 <View style={styles.container}>
-                    {mounted && selectedMediaItemIndex !== null ? <FlatList
+                    <MediaViewerHeader
+                        onRequestClose={this.props.onRequestClose}
+                    />
+                    {mounted && selectedMediaItemIndex !== null ?
+                    <FlatList
                         data={media}
                         keyExtractor={item => item.path}
                         pagingEnabled
@@ -35,7 +43,6 @@ export default class MediaSlider extends React.Component {
                             {length: screenWidth, offset: screenWidth * index, index}
                         )}
                         initialScrollIndex={selectedMediaItemIndex}
-                        // style={{ flex: 1 }}
                         renderItem={({ item }) => (
                             <View style={{
                                 width: screenWidth,
@@ -90,20 +97,23 @@ export default class MediaSlider extends React.Component {
     componentWillUnmount() {
         Dimensions.removeEventListener("change");
     }
-
         
     onViewableItemsChanged = (data) => {
         console.log('onViewableItemsChanged: ', data);
         if(data.changed[0].isViewable) {
             this.setState({ selectedMediaItemIndex: data.changed[0].index });
+            this.props.rememberCurrentlyViewedMediaItem(data.changed[0].item);
         }
+    }
+
+    componentDidUpdate() {
+        console.log("media slider from redux: ", this.props.mediaSlider);
     }
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // position: 'absolute',
         backgroundColor: 'black'
     },
     mediaItemContainer: {
@@ -112,3 +122,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 });
+
+const mapStateToProps = state => {
+    return {
+        mediaSlider: state.mediaSlider
+    }
+}
+
+const mapDispatchToprops = () => {
+    return { rememberCurrentlyViewedMediaItem }
+}
+
+export default connect(mapStateToProps, mapDispatchToprops())(MediaSlider);

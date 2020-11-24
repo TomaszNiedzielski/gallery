@@ -4,7 +4,10 @@ import { View, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-export default class MediaViewerHeader extends React.Component {
+import { connect } from 'react-redux';
+import { downloadMediaItem } from '../../redux/actions/mediaSlider';
+
+class MediaViewerHeader extends React.Component {
     render() {
         return(
             <View style={styles.container}>
@@ -18,7 +21,6 @@ export default class MediaViewerHeader extends React.Component {
             </View>
         )
     }
-    
 }
 
 const styles = StyleSheet.create({
@@ -45,3 +47,13 @@ const styles = StyleSheet.create({
         top: -1
     }
 });
+
+const mapStateToProps = state => {
+    return {}
+}
+
+const mapDispatchToProps = () => {
+    return {  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps())(MediaViewerHeader);

@@ -11,37 +11,37 @@ class MediaList extends React.Component {
         this.state = {
             media: props.media,
             selectedMediaItemIndex: null,
-            columnNumber: props.columnNumber
         }
     }
 
     render() {
-        const { media, selectedMediaItemIndex, columnNumber } = this.state;
-        console.log('column number: ', columnNumber);
+        const { media, selectedMediaItemIndex } = this.state;
+        const { numberOfColumns } = this.props;
+        console.log('column number: ', numberOfColumns);
         return(
             <View style={styles.container}>
-                {media.length > 0 && <FlatList
+                {media.length > 0 && 
+                <FlatList
                     data={media}
                     keyExtractor={item => item.path}
-                    key={columnNumber}
+                    key={numberOfColumns}
                     renderItem={({ item, index }) => (
                         <MediaListItem
                             item={item}
                             index={index}
                             onPressHandler={this.openMediaItem}
                             isRemovingEnabled={this.props.isRemovingEnabled}
-                            columnNumber={columnNumber}
+                            numberOfColumns={numberOfColumns}
                         />
                     )}
-                    numColumns={columnNumber}
+                    numColumns={numberOfColumns}
                 />}
                 {selectedMediaItemIndex !== null ?
                     <MediaSlider
                         media={media}
                         onRequestClose={this.backAction}
                         selectedMediaItemIndex={selectedMediaItemIndex}
-                    />
-                    : null
+                    /> : null
                 }
             </View>
         );
@@ -65,9 +65,6 @@ class MediaList extends React.Component {
         }
         if(this.state.media && this.props.media && this.state.media.length !== this.props.media.length) {
             this.setState({ media: this.props.media });
-        }
-        if(this.state.columnNumber !== this.props.columnNumber) {
-            this.setState({ columnNumber: this.props.columnNumber });
         }
     }
 
@@ -112,7 +109,9 @@ const mapDispatchToprops = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        //justifyContent: 'center',
+        //alignItems: 'center'
     },
 });
 
