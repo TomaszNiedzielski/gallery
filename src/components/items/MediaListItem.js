@@ -10,14 +10,18 @@ import { connect } from 'react-redux';
 import { addSelectedMediaToCollection, removeSelectedMediaFromCollection } from '../../redux/actions/selectedMedia';
 
 class MediaListItem extends React.Component {
-
     render() {
-        const { item, index, onPressHandler, isRemovingEnabled, columnNumber } = this.props;
-        let numColumns = !columnNumber ? 3 : columnNumber;
+        const { item, index, onPressHandler, isRemovingEnabled, numberOfColumns } = this.props;
+        let numColumns = !numberOfColumns ? 3 : numberOfColumns;
         console.log('numColumns: ', numColumns);
+        console.log(item);
         return (
             <TouchableWithoutFeedback onPress={() => onPressHandler(index)}>
-                <View style={styles.container}>
+                <View style={[styles.container, {
+                    height: numColumns === 3 ? Dimensions.get('window').width/numColumns-1 : item.height * Dimensions.get('window').width / item.width,
+                    width: Dimensions.get('window').width/numColumns,
+                    padding: 1
+                }]}>
                     <CheckBox
                         value={false}
                         visible={isRemovingEnabled}
@@ -26,9 +30,9 @@ class MediaListItem extends React.Component {
                     <FastImage
                         source={{ uri: item.path }}
                         style={{
-                            height: Dimensions.get('window').width/numColumns-6,
-                            width: Dimensions.get('window').width/numColumns-6,
-                            margin: 3
+                            height: numColumns === 3 ? Dimensions.get('window').width/numColumns-2 : item.height * Dimensions.get('window').width / item.width-1,
+                            width: Dimensions.get('window').width/numColumns-1,
+                            borderRadius: 3
                         }}
                     />
                 </View>
@@ -48,8 +52,9 @@ class MediaListItem extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    mediaItem: {
-        
+    container: {
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 
@@ -58,7 +63,7 @@ MediaListItem.propTypes = {
     index: PropTypes.number,
     onPressHandler: PropTypes.func,
     isRemovingEnabled: PropTypes.bool,
-    columnNumber: PropTypes.number
+    numberOfColumns: PropTypes.number
 }
 
 const mapStateToProps = (state) => {

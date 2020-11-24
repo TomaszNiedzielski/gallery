@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback, BackHandler } from 'react-native';
+import { View, StyleSheet, BackHandler } from 'react-native';
 
 import MediaList from '../components/lists/MediaList';
 import Menu from '../components/modals/Menu';
@@ -11,13 +11,16 @@ import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { removeSelectedMediaFromState } from '../redux/actions/folders';
 import { removeSelectedMediaFromCollection } from '../redux/actions/selectedMedia';
+import { changeNumberOfColumnsInFolderLayout,
+    restoreSettingsFromAsyncStorage,
+    saveUpdatedSettingsInAsyncStorage
+} from '../redux/actions/settings';
+
 import { ApiUrl } from '../constans/ApiUrl';
 
 class FolderScreen extends React.Component {
-
     constructor(props) {
         super(props);
-
         this.iconSize = 22;
         this.iconColor = 'white';
 
@@ -26,26 +29,26 @@ class FolderScreen extends React.Component {
             isMenuOpen: false,
             isChangeFolderNameManagerOpen: false,
             isRemovingEnabled: false,
-            columnNumber: 3
         }
     }
 
     render() {
-        const { folderName, isMenuOpen, isChangeFolderNameManagerOpen, isRemovingEnabled, columnNumber } = this.state;
+        const { folderName, isMenuOpen, isChangeFolderNameManagerOpen, isRemovingEnabled } = this.state;
+        const { numberOfColumns } = this.props.settings.folder;
         return (
             <View style={styles.container}>
                 <MediaList
                     folderName={folderName}
                     isRemovingEnabled={isRemovingEnabled}
                     navigation={this.props.navigation}
-                    columnNumber={columnNumber}
+                    numberOfColumns={numberOfColumns}
                 />
                 {isMenuOpen &&
                     <Menu
                         onRequestClose={() => this.setState({ isMenuOpen: false })}
                         menuList={[{
-                                name: 'One column layout',
-                                onPressHandler: this.toggleMediaLayout
+                                name: numberOfColumns === 3 ? 'One column layout' : 'Three column layout',
+                                onPressHandler: this.props.changeNumberOfColumnsInFolderLayout
                             }, {
                                 name: 'Change folder name',
                                 onPressHandler: this.openChangeFolderNameManager
@@ -60,7 +63,7 @@ class FolderScreen extends React.Component {
                     <ChangeFolderNameManager
                         onRequestClose={(newNameValue) => this.setState({
                             isChangeFolderNameManagerOpen: !isChangeFolderNameManagerOpen,
-                            folderName: newNameValue ? newNameValue : ''
+                            folderName: newNameValue ? newNameValue : folderName
                         })}
                         folderName={folderName}
                     />}
@@ -69,12 +72,11 @@ class FolderScreen extends React.Component {
     }
 
     componentDidMount() {
-        const iconSize = 22;
-        const iconColor = 'white';
+        this.props.restoreSettingsFromAsyncStorage();
         this.props.navigation.setOptions({
             title: this.state.folderName,
-            headerTitleStyle: { color: iconColor },
-            headerTintColor: iconColor,
+            headerTitleStyle: { color: this.iconColor },
+            headerTintColor: this.iconColor,
             headerBackground: () => <DefaultHeaderBackground />,
             headerRight: () => (
                 <View style={styles.headerRight}>
@@ -82,22 +84,21 @@ class FolderScreen extends React.Component {
                 </View>
             )
         });
-
         // back button handler
         this.backHandler = BackHandler.addEventListener(
             "hardwareBackPress",
             this.backAction
         );
-
         // remove selected items from reduces
         this.props.removeSelectedMediaFromCollection();
     }
 
     componentDidUpdate() {
-        // update folder name, updating this way may cause performace issues in the future
+        // Update folder name, updating this way may cause performace issues in the future.
         this.props.navigation.setOptions({
             title: this.state.folderName
         });
+        this.props.saveUpdatedSettingsInAsyncStorage(this.props.settings);
     }
 
     componentWillUnmount() {
@@ -109,11 +110,11 @@ class FolderScreen extends React.Component {
     }
 
     handleRemoveMediaManager = () => {
-        // show checkboxes on media containers
+        // Show checkboxes on media containers.
         const isRemovingEnabled = !this.state.isRemovingEnabled;
         this.setState({ isRemovingEnabled: isRemovingEnabled });
 
-        // add icon of trash on the header
+        // Add icon of trash to header.
         this.props.navigation.setOptions({
             headerRight: () => (
                 (isRemovingEnabled === true ? <View>
@@ -133,19 +134,17 @@ class FolderScreen extends React.Component {
         removeSelectedMediaFromState(selectedMedia, this.state.folderName);
         removeSelectedMediaFromCollection();
 
-        // remove images in server too
+        // Remove images in server too.
         this.sendRemoveMediaRequest(selectedMedia);
-
         this.handleRemoveMediaManager();
     }
 
     sendRemoveMediaRequest(selectedMedia) {
-
-        // get only names from links
+        // Get only names from links.
         selectedMedia = selectedMedia.map(mediaLink => {
             return mediaLink.split('/').pop();
         });
-        console.log('po wyluskaniu nazw z linkow: ', selectedMedia);
+
         fetch(ApiUrl+'media/delete', {
             method: 'POST',
             headers: {
@@ -168,16 +167,10 @@ class FolderScreen extends React.Component {
     backAction = () => {
         if(this.state.isRemovingEnabled) {
             this.handleRemoveMediaManager();
-            this.props.removeSelectedMediaFromCollection(); // if something has been selected
+            this.props.removeSelectedMediaFromCollection(); // If something has been selected
             return () => null;
         }
     }
-
-    toggleMediaLayout = () => {
-        this.setState({ columnNumber: this.state.columnNumber === 3 ? 1 : 3 });
-        console.log('toggle');
-    }
-
 }
 
 const styles = StyleSheet.create({
@@ -192,14 +185,18 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
     return {
         selectedMedia: state.selectedMedia,
-        user: state.user
+        user: state.user,
+        settings: state.settings
     }
 }
 
 const mapDispatchToprops = () => {
     return {
         removeSelectedMediaFromState,
-        removeSelectedMediaFromCollection
+        removeSelectedMediaFromCollection,
+        changeNumberOfColumnsInFolderLayout,
+        restoreSettingsFromAsyncStorage,
+        saveUpdatedSettingsInAsyncStorage
     }
 }
 

@@ -10,7 +10,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import React from 'react';
-import { AsyncStorage } from 'react-native';
 
 import HomeScreen from './src/screens/HomeScreen';
 import AddMediaScreen from './src/screens/AddMediaScreen';
@@ -29,12 +28,16 @@ import foldersReducer from './src/redux/reducers/folders';
 import selectedMediaReducer from './src/redux/reducers/selectedMedia';
 import userReducer from './src/redux/reducers/user';
 import accessCodeReducer from './src/redux/reducers/accessCode';
+import settingsReducer from './src/redux/reducers/settings';
+import mediaSliderReducer from './src/redux/reducers/mediaSlider';
 
 const reducers = combineReducers({
     folders: foldersReducer,
     selectedMedia: selectedMediaReducer,
     user: userReducer,
-    accessCode: accessCodeReducer
+    accessCode: accessCodeReducer,
+    settings: settingsReducer,
+    mediaSlider: mediaSliderReducer
 });
 
 const store = createStore(reducers, applyMiddleware(thunk));

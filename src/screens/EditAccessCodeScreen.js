@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, BackHandler } from 'react-native';
 
 import { Header, Keyboard,  CodeInput, IncorrectCode } from './AccessCodeScreen';
 import BlurredBackground from '../assets/BlurredBackground.png';
@@ -13,7 +13,7 @@ class EditAccessCodeScreen extends React.Component {
         super(props);
         this.state = {
             code: '',
-            confirmedCode: '',
+            confirmCode: '',
             headerTitle: 'Create access code.',
             isConfirmationNow: false,
             incorrectConfirmation: false
@@ -21,7 +21,7 @@ class EditAccessCodeScreen extends React.Component {
     }
 
     render() {
-        const { headerTitle, incorrectConfirmation, code, confirmedCode, isConfirmationNow } = this.state;
+        const { headerTitle, incorrectConfirmation, code, confirmCode, isConfirmationNow } = this.state;
         return(
             <View style={styles.container}>
                 <Image
@@ -32,11 +32,12 @@ class EditAccessCodeScreen extends React.Component {
                     title={headerTitle}
                 />
                 <CodeInput
-                    code={isConfirmationNow ? confirmedCode : code}
+                    code={isConfirmationNow ? confirmCode : code}
                 />
                 {incorrectConfirmation && <IncorrectCode />}
                 <Keyboard
                     onKeyPressHandler={this.onKeyPressHandler}
+                    onPressBackspace={this.onPressBackspace}
                 />
             </View>
         );
@@ -46,18 +47,26 @@ class EditAccessCodeScreen extends React.Component {
         this.props.navigation.setOptions({
             headerShown: false
         });
+        this.backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            this.backAction
+        );
     }
 
     componentDidUpdate() {
         console.log("new code from redux: ", this.props.accessCode);
     }
 
+    componentWillUnmount() {
+        this.backHandler.remove();
+    }
+
     onKeyPressHandler = key => {
-        const { code, confirmedCode, isConfirmationNow } = this.state;
+        const { code, confirmCode, isConfirmationNow } = this.state;
         let updatedCode;
         if(isConfirmationNow) {
-            updatedCode = confirmedCode + key;
-            this.setState({ confirmedCode: updatedCode });
+            updatedCode = confirmCode + key;
+            this.setState({ confirmCode: updatedCode });
             if(updatedCode.length === 4) {
                 if(code === updatedCode) {
                     // Save new access code.
@@ -66,7 +75,7 @@ class EditAccessCodeScreen extends React.Component {
                     this.props.navigation.goBack();
                 } else {
                     // Incorrect confirmation
-                    this.setState({ incorrectConfirmation: true, confirmedCode: '' });
+                    this.setState({ incorrectConfirmation: true, confirmCode: '' });
                     console.log('not the same codes', code, '  ', updatedCode);
                 }
             }
@@ -76,6 +85,27 @@ class EditAccessCodeScreen extends React.Component {
         }
         if(updatedCode.length === 4) {
             this.setState({ headerTitle: 'Confirm access code.', isConfirmationNow: true });
+        }
+    }
+
+    onPressBackspace = () => {
+        const { isConfirmationNow, confirmCode, code } = this.state;
+        if(isConfirmationNow && confirmCode.length > 0) {
+            this.setState({ confirmCode: this.state.confirmCode.slice(0, -1) });
+        } else if(!isConfirmationNow && code.length > 0) {
+            this.setState({ code: this.state.code.slice(0, -1) });
+        }
+    }
+
+    backAction = () => {
+        if(this.state.isConfirmationNow) {
+            this.setState({ 
+                isConfirmationNow: false,
+                headerTitle: 'Create access code.',
+                code: '',
+                confirmCode: ''
+            });
+            return () => null;
         }
     }
 
