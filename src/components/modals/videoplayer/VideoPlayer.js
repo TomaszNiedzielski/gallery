@@ -2,13 +2,14 @@ import React from 'react';
 import { View, StyleSheet, Dimensions, TouchableNativeFeedback } from 'react-native';
 
 import Video from 'react-native-video';
-
 import Controls from './Controls';
 
-export default class VideoPlayer extends React.Component {
+import { connect } from 'react-redux';
+import { toggleHeaderVisibility } from '../../../redux/actions/mediaSlider';
 
+class VideoPlayer extends React.Component {
     state = {
-        isControlsVisible: true,
+        isControlsVisible: this.props.isHeaderVisible,
         paused: false,
         duration: null,
         videoPlayerHeight: null,
@@ -17,11 +18,12 @@ export default class VideoPlayer extends React.Component {
     }
 
     render() {
-        const { paused, duration, isControlsVisible, currentTime, videoPlayerWidth, videoPlayerHeight } = this.state;
-        console.log('curreny time: ', currentTime);
+        const { paused, duration, currentTime, videoPlayerWidth, videoPlayerHeight } = this.state;
+        const isControlsVisible = this.props.isHeaderVisible;
+
         return(
             <>
-            <TouchableNativeFeedback onPress={() => this.keepControlsVisible()}>
+            <TouchableNativeFeedback onPress={() => { this.keepControlsVisible(); this.props.toggleHeaderVisibility() }}>
                 <View style={styles.container}>
                     <Video source={{ uri: this.props.uri }}   // Can be a URL or a local file.
                         ref={(ref) => {
@@ -30,10 +32,8 @@ export default class VideoPlayer extends React.Component {
                         style={{ width: videoPlayerWidth, height: videoPlayerHeight }}
                         paused={paused}
                         onLoad={data => this.onLoad(data)}
-                        onSeek={(data) => {console.log(data)}}
                         onProgress={data => this.setState({ currentTime: data.currentTime })}
                         resizeMode="contain"
-                        //fullscreenOrientation="landscape"
                     />
                 </View>
             </TouchableNativeFeedback>
@@ -64,10 +64,9 @@ export default class VideoPlayer extends React.Component {
     }
 
     setVideoSize = () => {
-        const windowWidth = Dimensions.get('window').width;  // TU JEST NAROZPIERDALANE I ORIENTATION NIE DZIALA
+        const windowWidth = Dimensions.get('window').width;
         const windowHeight = Dimensions.get('window').height;
-
-        let videoPlayerHeight = windowWidth*windowWidth/windowHeight;
+        const videoPlayerHeight = windowWidth*windowWidth/windowHeight;
 
         this.setState({
             videoPlayerHeight: videoPlayerHeight,
@@ -76,11 +75,7 @@ export default class VideoPlayer extends React.Component {
     }
 
     keepControlsVisible = () => {
-        //clearTimeout(this.controlsTimer);
-
         this.setState({ isControlsVisible: !this.state.isControlsVisible });
-
-        //this.controlsTimer = setTimeout(() => this.setControlsVisible, 3000);
     }
 
     setControlsVisible = () => {
@@ -88,29 +83,12 @@ export default class VideoPlayer extends React.Component {
     }
 
     componentDidMount() {
-        console.log('video player component did mount');
         this.keepControlsVisible();
 
         this.orientationChange = Dimensions.addEventListener("change", () => {
             this.setVideoSize();
-            console.log('orientation change');
         });
     }
-
-    componentWillUnmount() {
-        //clearTimeout(this.controlsTimer);
-        //removeEventListener(this.orientationChange);
-    }
-
-    /*isPortrait = () => {
-        const dim = Dimension.get("window")
-        return dim.height >= dim.width
-    }
-      
-    isLandscape = () => {
-        const dim = Dimension.get("window")
-        return dim.width >= dim.height
-    }*/
 }
 
 const styles = StyleSheet.create({
@@ -121,3 +99,15 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 });
+
+const mapStateToProps = state => {
+    return {
+        isHeaderVisible: state.mediaSlider.isHeaderVisible
+    }
+}
+
+const mapDispatchToProps = () => {
+    return { toggleHeaderVisibility }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps())(VideoPlayer);
