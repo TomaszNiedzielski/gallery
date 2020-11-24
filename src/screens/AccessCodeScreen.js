@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Image, TouchableNativeFeedback } from 'react-na
 
 import BlurredBackground from '../assets/BlurredBackground.png';
 
+import Icon from 'react-native-vector-icons/Ionicons';
+
 const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 
 export const Header = ({ title }) => (
@@ -22,18 +24,25 @@ export const IncorrectCode = () => (
     <Text style={styles.incorrectCode}>Incorrect code! Try again.</Text>
 )
 
-export const Keyboard = ({ onKeyPressHandler }) => (
-    <View style={styles.keyboard}>
-        {KEYS.map((key) => (
-            <TouchableNativeFeedback
-                key={key}
-                onPress={() => onKeyPressHandler(key)}
-            >
-                <View style={styles.keyContainer}>
-                    <Text style={styles.keyNumber}>{key}</Text>
+export const Keyboard = ({ onKeyPressHandler, onPressBackspace }) => (
+    <View style={styles.keyboardContainer}>
+        <View style={styles.keyboard}>
+            {KEYS.map((key) => (
+                <TouchableNativeFeedback
+                    key={key}
+                    onPress={() => onKeyPressHandler(key)}
+                >
+                    <View style={styles.keyContainer}>
+                        <Text style={styles.keyNumber}>{key}</Text>
+                    </View>
+                </TouchableNativeFeedback>
+            ))}
+            <TouchableNativeFeedback onPress={() => onPressBackspace()}>
+                <View style={[styles.keyContainer, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
+                    <Icon name="backspace" color="white" size={50} />
                 </View>
             </TouchableNativeFeedback>
-        ))}
+        </View>
     </View>
 )
 
@@ -63,6 +72,7 @@ export default class AccessCodeScreen extends React.Component {
                 {this.state.isCodeIncorrect && <IncorrectCode />}
                 <Keyboard
                     onKeyPressHandler={this.onKeyPressHandler}
+                    onPressBackspace={this.onPressBackspace}
                 />
             </View>
         );
@@ -87,6 +97,10 @@ export default class AccessCodeScreen extends React.Component {
             }
         }
     }
+
+    onPressBackspace = () => {
+        this.setState({ code: this.state.code.slice(0, -1) });
+    }
 }
 
 const styles = StyleSheet.create({
@@ -99,12 +113,17 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '100%'
     },
+    keyboardContainer: {
+        position: 'absolute',
+        bottom: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     keyboard: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'center',
-        bottom: 50,
-        position: 'absolute'
+        justifyContent: 'flex-end',
+        width: 300
     },
     keyContainer: {
         width: 80,
@@ -143,7 +162,6 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 16,
         color: 'white',
-        // width: '100%',
         padding: 10,
         marginTop: 50,
         marginBottom: 5,
